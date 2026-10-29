@@ -219,11 +219,6 @@ const formatarRotulo = (s) => {
     .replace(/Impacto\s*copay\s*no\s*custo/gi, 'Impacto de coparticipação')
     .replace(/Impacto\s*copay/gi, 'Impacto de coparticipação')
     .replace(/\bcopay\b/gi, 'coparticipação')
-    .replace(/\bCopay\b/g, 'Coparticipação')
-    .replace(/\bCusto\s*PMPM\b/gi, 'Custo por vida (mês)')
-    .replace(/\bPMPM\b/g, 'Custo por vida (mês)')
-    .replace(/^Total\s*\((?:Sexo|Gênero|Genero)\)$/i, 'Total (Por gênero)')
-    .replace(/\bTotal\s*\(Sexo\)/gi, 'Total (Por gênero)');
 };
 
 /** estado visual a partir de um alerta { acima | abaixo | atencao | invertido } */
@@ -836,18 +831,14 @@ function resolverValorColuna(l, c, linhas, bloco) {
   const rotuloNorm = String(c.rotulo || '').toLowerCase();
   const ehCustoAnterior =
     c.calculo === 'custoAnterior' ||
-    (rotuloNorm.includes('custo') && (rotuloNorm.includes('anterior') || rotuloNorm.includes('ano 1') || rotuloNorm.includes('ant')));
   if (ehCustoAnterior) {
-    return l.CustoAnt ?? l['Ano 1'] ?? l.CustoAnoAnterior ?? l._vAnt ?? null;
   }
 
-  if (c.calculo === 'percentualCustoAnterior') {
     return l.PercTotalAnt ?? l.PercTotalAnoAnterior ?? null;
   }
 
   const ehCustoEvento =
     c.calculo === 'custoEvento' ||
-    (!ehCustoAnterior && rotuloNorm.includes('custo') && !rotuloNorm.includes('%') && (bloco?.id === 'mix-le-rc' || bloco?.fonte?.assinatura === 'mixLeRc'));
 
   if (ehCustoEvento) {
     const norm = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
@@ -906,9 +897,6 @@ function resolverValorColuna(l, c, linhas, bloco) {
 
   const ehVarCusto =
     c.calculo === 'varCusto' ||
-    (rotuloNorm.includes('custo') && (rotuloNorm.includes('var') || rotuloNorm.includes('δ') || rotuloNorm.includes('dif') || rotuloNorm.includes('Δ')));
-  if (ehVarCusto && l.VarCusto !== undefined && l.VarCusto !== null) {
-    return l.VarCusto;
   }
 
   const ehVarRC =
@@ -1102,9 +1090,6 @@ function resolverFonteTabela(fonte) {
   const isIndicadores = fonte.assinatura === 'indicadores' || idsDaFonte(fonte).includes(5);
   if (isIndicadores && itens.length) {
     const MAPA_IND = {
-      'consultas pmpm': 'Consultas',
-      'consulta por associado': 'Consultas',
-      'consultas': 'Consultas',
       'exames/consultas': 'Exames por consulta',
       'exames por consultas': 'Exames por consulta',
       'exames por consulta': 'Exames por consulta',
@@ -1116,29 +1101,9 @@ function resolverFonteTabela(fonte) {
       'relação exames/consultas': 'Exames por consulta',
       'razao exames por consulta': 'Exames por consulta',
       'razão exames por consulta': 'Exames por consulta',
-      'exames pmpm': 'Exames',
-      'exame por associado': 'Exames',
-      'exames por associado': 'Exames',
-      'exames': 'Exames',
       'indice de uti': 'Índice de UTI',
       'índice de uti': 'Índice de UTI',
       'uti associado': 'Índice de UTI',
-      'atendimento de urgencia': 'Pronto-Socorro',
-      'atendimento de urgência': 'Pronto-Socorro',
-      'atendimento de urgencia por associado': 'Pronto-Socorro',
-      'atendimento de urgência por associado': 'Pronto-Socorro',
-      'pronto socorro': 'Pronto-Socorro',
-      'pronto-socorro': 'Pronto-Socorro',
-      'pronto socorro pmpm': 'Pronto-Socorro',
-      'pronto-socorro pmpm': 'Pronto-Socorro',
-      'pronto atendimento': 'Pronto-Socorro',
-      'pronto-atendimento': 'Pronto-Socorro',
-      'pronto atendimento pmpm': 'Pronto-Socorro',
-      'pronto atendimento por associado': 'Pronto-Socorro',
-      'terapias': 'Terapias seriadas',
-      'terapias pmpm': 'Terapias seriadas',
-      'terapias seriadas': 'Terapias seriadas',
-      'terapias seriadas / associado': 'Terapias seriadas',
       'int 1000 vidas/mes': 'Internações por 1.000 vidas/mês',
       'int 1000 vidas/mês': 'Internações por 1.000 vidas/mês',
       'int. 1000 vidas/mes': 'Internações por 1.000 vidas/mês',
@@ -1315,7 +1280,6 @@ function resolverFonteTabela(fonte) {
       }
     }
 
-    // Cruzamento com Relatório 14 (Evolução Mensal Despesa Por Evento) para obter Ano 1, Ano 2 e Variação
     const idsR14 = idsDaFonte({ assinatura: 'eventoMensal' });
     const itensR14 = (idsR14.length ? idsR14.flatMap(itensDoRelatorio) : itensDoRelatorio(14)) || [];
     // Cruzamento com Relatório 5 (Indicadores de Utilização) para obter Quantidade e Variações
@@ -1329,40 +1293,23 @@ function resolverFonteTabela(fonte) {
 
     const resolverDadosItem = (it) => {
       const row15 = res.linhas.find((l) => it.match(normTexto(l.__eixo)));
-      const itemAnt = itensR14.find((d) => it.match(normTexto(d.Linha)) && (d.Coluna === 'Media Anterior' || d.Coluna === 'Média Anterior'));
-      const itemAtu = itensR14.find((d) => it.match(normTexto(d.Linha)) && (d.Coluna === 'Media' || d.Coluna === 'Média'));
 
       const vAnt = itemAnt ? num(itemAnt.Valor) : null;
-      const vAtu = itemAtu ? num(itemAtu.Valor) : null;
       const vTot = row15 ? num(row15.Total) : null;
       const pCart = row15 ? num(row15['% Despesa'] ?? row15['Perc_Despesa']) : null;
       const pBench = row15 ? num(row15['% Despesa Bench'] ?? row15['Perc_Despesa_Bench']) : null;
 
-      // Resolução de Quantidade e Variação de Quantidade via R5 (apenas dados oficiais da API)
       let qtd = null;
-      let varQtdPct = null;
       const kNome = normTexto(it.nome);
-      if (kNome === 'consultas') {
-        const q = itensR5.find((d) => normTexto(d.Linha).includes('consultas') && igual(d.Coluna, 'Quantidade'));
         if (q) qtd = num(q.Valor);
-        const difItem = itensR5.find((d) => normTexto(d.Linha).includes('consultas') && (igual(d.Coluna, 'Dif') || igual(d.Coluna, 'DIF')));
-        if (difItem) varQtdPct = num(difItem.Valor);
-      } else if (kNome === 'exames') {
-        const q = itensR5.find((d) => normTexto(d.Linha).includes('exames') && igual(d.Coluna, 'Quantidade'));
         if (q) qtd = num(q.Valor);
-        const difItem = itensR5.find((d) => normTexto(d.Linha).includes('exames') && (igual(d.Coluna, 'Dif') || igual(d.Coluna, 'DIF')));
-        if (difItem) varQtdPct = num(difItem.Valor);
       } else if (kNome.includes('terapia')) {
         const q = itensR5.find((d) => normTexto(d.Linha).includes('terapia') && igual(d.Coluna, 'Quantidade'));
         if (q) qtd = num(q.Valor);
-        const difItem = itensR5.find((d) => normTexto(d.Linha).includes('terapia') && (igual(d.Coluna, 'Dif') || igual(d.Coluna, 'DIF')));
-        if (difItem) varQtdPct = num(difItem.Valor);
       } else if (kNome.includes('emerg') || kNome.includes('urgenc') || kNome.includes('pronto')) {
         if (row15 && (num(row15.Total) > 0 || num(row15['% Despesa']) > 0 || num(row15['Perc_Despesa']) > 0)) {
           const q = itensR5.find((d) => (normTexto(d.Linha).includes('urgencia') || normTexto(d.Linha).includes('urgência') || normTexto(d.Linha).includes('pronto')) && igual(d.Coluna, 'Quantidade'));
           if (q) qtd = num(q.Valor);
-          const difItem = itensR5.find((d) => (normTexto(d.Linha).includes('urgencia') || normTexto(d.Linha).includes('urgência')) && (igual(d.Coluna, 'Dif') || igual(d.Coluna, 'DIF')));
-          if (difItem) varQtdPct = num(difItem.Valor);
         }
       }
 
@@ -1370,7 +1317,6 @@ function resolverFonteTabela(fonte) {
         it,
         nome: it.nome,
         qtd,
-        varQtdPct,
         vTot,
         pCart,
         pBench,
@@ -1379,14 +1325,10 @@ function resolverFonteTabela(fonte) {
       };
     };
 
-    const formatarLinha = (nome, vTot, pCart, pBench, vAnt, vAtu, qtd, varQtdPct, opts = {}) => {
       let varStr = '—';
       let varPct = null;
-      if (vAnt !== null && vAtu !== null && vAnt > 0) {
         varPct = ((vAtu - vAnt) / vAnt) * 100;
         varStr = (varPct > 0 ? '+' : '') + brl(varPct, 1) + '%';
-      } else if (vAnt !== null && vAtu !== null) {
-        if (vAtu > 0 && vAnt === 0) {
           varPct = 100;
           varStr = '+100,0%';
         } else {
@@ -1423,12 +1365,8 @@ function resolverFonteTabela(fonte) {
         'Benchmark*': pBench !== null ? brl(pBench, 2) + '%' : '—',
         '% Despesa Bench': pBench !== null ? brl(pBench, 2) + '%' : '—',
         Perc_Despesa_Bench: pBench,
-        VarQtd: varQtdPct,
-        VarQtdPct: varQtdPct,
         VarCusto: varPct,
         VarCustoPct: varPct,
-        'Ano 1': vAnt,
-        'Ano 2': vAtu,
         Variação: varStr,
         Variacao: varStr,
         Variao: varStr,
@@ -1442,20 +1380,11 @@ function resolverFonteTabela(fonte) {
 
     // 1. SEÇÃO HOSPITALAR (vem antes de ambulatorial conforme solicitado)
     const hospProcessados = itensHospDef.map(resolverDadosItem);
-    const rowTotHosp15 = res.linhas.find((l) => normTexto(l.__eixo).includes('total hospitalar'));
     const totHospVTot = rowTotHosp15 ? num(rowTotHosp15.Total) : hospProcessados.reduce((acc, d) => acc + (d.vTot || 0), 0);
     const totHospPCart = rowTotHosp15 ? num(rowTotHosp15['% Despesa'] ?? rowTotHosp15['Perc_Despesa']) : hospProcessados.reduce((acc, d) => acc + (d.pCart || 0), 0);
     const totHospPBench = rowTotHosp15 ? num(rowTotHosp15['% Despesa Bench'] ?? rowTotHosp15['Perc_Despesa_Bench']) : hospProcessados.reduce((acc, d) => acc + (d.pBench || 0), 0);
 
-    const itemAntTotHosp = itensR14.find((d) => normTexto(d.Linha).includes('total hospitalar') && (d.Coluna === 'Media Anterior' || d.Coluna === 'Média Anterior'));
-    const itemAtuTotHosp = itensR14.find((d) => normTexto(d.Linha).includes('total hospitalar') && (d.Coluna === 'Media' || d.Coluna === 'Média'));
-    const totHospVAnt = itemAntTotHosp ? num(itemAntTotHosp.Valor) : hospProcessados.reduce((acc, d) => acc + (d.vAnt || 0), 0);
-    const totHospVAtu = itemAtuTotHosp ? num(itemAtuTotHosp.Valor) : hospProcessados.reduce((acc, d) => acc + (d.vAtu || 0), 0);
 
-    const qInt = itensR5.find((d) => normTexto(d.Linha).includes('int 1000') && igual(d.Coluna, 'Quantidade'));
-    const difInt = itensR5.find((d) => normTexto(d.Linha).includes('int 1000') && igual(d.Coluna, 'Dif'));
-    const totHospQtd = qInt ? num(qInt.Valor) : hospProcessados.reduce((acc, d) => acc + (d.qtd || 0), 0);
-    const totHospVarQtdPct = difInt ? num(difInt.Valor) : null;
 
     linhasEstruturadas.push(formatarLinha(
       'Total Despesas Hospitalares',
@@ -1465,8 +1394,6 @@ function resolverFonteTabela(fonte) {
       totHospVAnt,
       totHospVAtu,
       totHospQtd,
-      totHospVarQtdPct,
-      { isSecao: true, isDestaque: true, classeLinha: 'linha-secao-evento linha-total-hospitalar' }
     ));
 
     hospProcessados.forEach((d) => {
@@ -1478,24 +1405,12 @@ function resolverFonteTabela(fonte) {
         d.vAnt,
         d.vAtu,
         d.qtd,
-        d.varQtdPct,
-        { classeLinha: 'linha-hospitalar' }
       ));
     });
 
     // 2. SEÇÃO AMBULATORIAL (vem após hospitalar)
     const ambProcessados = itensAmbDef.map(resolverDadosItem);
-    const totAmbVTot = ambProcessados.reduce((acc, d) => acc + (d.vTot || 0), 0);
-    const totAmbPCart = ambProcessados.reduce((acc, d) => acc + (d.pCart || 0), 0);
-    const totAmbPBench = ambProcessados.reduce((acc, d) => acc + (d.pBench || 0), 0);
-    const totAmbVAnt = ambProcessados.reduce((acc, d) => acc + (d.vAnt || 0), 0);
-    const totAmbVAtu = ambProcessados.reduce((acc, d) => acc + (d.vAtu || 0), 0);
     const totAmbQtd = ambProcessados.filter((d) => d.qtd !== null).reduce((acc, d) => acc + (d.qtd || 0), 0);
-
-    const ambComQtdEVar = ambProcessados.filter((d) => d.qtd !== null && d.qtd > 0 && d.varQtdPct !== null);
-    const totAmbVarQtdPct = ambComQtdEVar.length
-      ? Number((ambComQtdEVar.reduce((acc, d) => acc + d.qtd * d.varQtdPct, 0) / ambComQtdEVar.reduce((acc, d) => acc + d.qtd, 0)).toFixed(1))
-      : null;
 
     linhasEstruturadas.push(formatarLinha(
       'Total Despesas Ambulatoriais',
@@ -1505,8 +1420,6 @@ function resolverFonteTabela(fonte) {
       totAmbVAnt,
       totAmbVAtu,
       totAmbQtd > 0 ? totAmbQtd : null,
-      totAmbVarQtdPct,
-      { isSecao: true, isDestaque: true, classeLinha: 'linha-secao-evento linha-total-ambulatorial' }
     ));
 
     ambProcessados.forEach((d) => {
@@ -1518,8 +1431,6 @@ function resolverFonteTabela(fonte) {
         d.vAnt,
         d.vAtu,
         d.qtd,
-        d.varQtdPct,
-        { classeLinha: 'linha-ambulatorial' }
       ));
     });
 
@@ -1533,40 +1444,20 @@ function resolverFonteTabela(fonte) {
       odoProcessado.vAnt,
       odoProcessado.vAtu,
       odoProcessado.qtd,
-      odoProcessado.varQtdPct,
-      { classeLinha: 'linha-odontologia' }
     ));
 
     // 4. TOTAL GERAL (abaixo de Despesas odontológicas englobando tudo)
-    const totGeralVTot = (totHospVTot || 0) + (totAmbVTot || 0) + (odoProcessado.vTot || 0);
-    const totGeralPCart = (totHospPCart || 0) + (totAmbPCart || 0) + (odoProcessado.pCart || 0);
-    const totGeralPBench = (totHospPBench || 0) + (totAmbPBench || 0) + (odoProcessado.pBench || 0);
-    const totGeralVAnt = (totHospVAnt || 0) + (totAmbVAnt || 0) + (odoProcessado.vAnt || 0);
-    const totGeralVAtu = (totHospVAtu || 0) + (totAmbVAtu || 0) + (odoProcessado.vAtu || 0);
-    const totGeralQtd = (totHospQtd || 0) + (totAmbQtd || 0) + (odoProcessado.qtd || 0);
 
-    const itensGeralComQtdEVar = [
-      { qtd: totHospQtd, varQtdPct: totHospVarQtdPct },
-      { qtd: totAmbQtd, varQtdPct: totAmbVarQtdPct },
-    ].filter((d) => d.qtd !== null && d.qtd > 0 && d.varQtdPct !== null);
 
-    const totGeralVarQtdPct = itensGeralComQtdEVar.length
-      ? Number((itensGeralComQtdEVar.reduce((acc, d) => acc + d.qtd * d.varQtdPct, 0) / itensGeralComQtdEVar.reduce((acc, d) => acc + d.qtd, 0)).toFixed(1))
-      : null;
 
     linhasEstruturadas.push(formatarLinha(
       'Total Geral',
       totGeralVTot,
-      totGeralPCart > 0 ? totGeralPCart : 100,
       totGeralPBench,
       totGeralVAnt,
       totGeralVAtu,
-      totGeralQtd > 0 ? totGeralQtd : null,
-      totGeralVarQtdPct,
-      { isDestaque: true, classeLinha: 'linha-total' }
     ));
 
-    ['Quantidade', 'Custo (R$)', 'Custo', 'Total', '% Empresa', 'Custo Total %', '% Despesa', 'Benchmark*', '% Despesa Bench', 'VarQtd', 'VarCusto', 'Ano 1', 'Ano 2', 'Variação', 'Diferença'].forEach((s) => {
       if (!res.series.includes(s)) res.series.push(s);
     });
 
@@ -1983,7 +1874,6 @@ function resolverFonteTabela(fonte) {
       });
     }
 
-    ['Custo', 'Total', 'Valor', 'PercTotal', 'PercTotalAnt', 'PercTotalAnoAnterior', 'PercBench', 'PercRC', 'PercLE', 'VarRC', 'VarCusto', 'Quantidade', 'Qtd', 'CustoAnt', 'Ano 1', 'CustoAnoAnterior', 'QtdAnt', 'QuantidadeAnt', 'QuantidadeAnoAnterior'].forEach((s) => {
       if (!res.series.includes(s)) res.series.push(s);
     });
 
@@ -1992,7 +1882,6 @@ function resolverFonteTabela(fonte) {
 
   // Para o slide de indicadores, garantir ordenação amigável: Consultas, Exames, Exames por consulta, Pronto-Socorro, Terapias, Internações, Diárias, UTI, Média de permanência
   if (isIndicadores && res.linhas && res.linhas.length) {
-    // Oculta linhas sem valores retornados pela API (ex: Pronto-Socorro ou Terapias caso não venham preenchidos no contrato)
     res.linhas = res.linhas.filter((l) => {
       const qtd = num(l.Quantidade);
       const ind = num(l.Indicador);
@@ -2002,20 +1891,13 @@ function resolverFonteTabela(fonte) {
     });
 
     const ORDEM_IND = [
-      'Consultas',
-      'Exames',
       'Exames por consulta',
-      'Pronto-Socorro',
-      'Atendimento de urgência',
-      'Terapias seriadas',
       'Internações por 1.000 vidas/mês',
       'Diárias por 1.000 vidas/mês',
       'Índice de UTI',
       'Média de permanência'
     ];
     res.linhas.sort((a, b) => {
-      const ia = ORDEM_IND.indexOf(a.__eixo);
-      const ib = ORDEM_IND.indexOf(b.__eixo);
       return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
     });
   }
@@ -2575,7 +2457,6 @@ const UI = {
             'Despesas odontológicas': 'Procedimentos odontológicos',
             'Odontologia': 'Procedimentos odontológicos'
           };
-          if (m[cel.texto]) tit = ` title="${m[cel.texto]}" style="cursor:help; border-bottom:1px dotted #ccc;"`;
         }
         return `<td${tit} class="${[colunas[j]?.numerica ? 'num' : '', cel.classe || ''].filter(Boolean).join(' ')}">${cel.html !== undefined ? cel.html : esc(cel.texto)}</td>`;
       })
@@ -3250,21 +3131,6 @@ function colunasEfetivas(bloco, dados) {
     if (!temCopay) {
       cols = cols.filter((c) => !c.somenteComCopay);
     }
-    // Se for mix-le-rc, oculta a coluna Δ Utilização RC se não houver dados válidos no período
-    if (bloco.id === 'mix-le-rc' && dados.linhas && dados.linhas.length) {
-      cols = cols.filter((c) => {
-        const rotNorm = normTexto(c.rotulo);
-        const ehVarRC = rotNorm.includes('utiliz') && rotNorm.includes('rc');
-        if (ehVarRC) {
-          const temAlgumDado = dados.linhas.some((l) => {
-            const v = l.VarRC ?? l.PercVarRC;
-            return v !== null && v !== undefined && v !== '' && v !== '—';
-          });
-          return temAlgumDado;
-        }
-        return true;
-      });
-    }
     // Se for rede-livre-escolha-mensal, elimina duplicidade visual:
     // Se existirem produtos discriminados (Premium, Corporate, Skill) com valores válidos na base,
     // oculta a coluna mãe consolidada "Livre escolha" para não duplicar o reembolso na leitura das colunas;
@@ -3881,7 +3747,6 @@ function tabelaResultadoPorProduto(bloco) {
 
       const plMed = isMed ? (planosPorProd.get(prodKey) || []) : [];
       const plOdo = !isMed ? (planosPorProd.get('ODONTO_' + prodKey) || (!temOdontoEsp && prodKey === 'PREMIUM' ? (planosPorProd.get('ODONTOLOGIA') || []) : [])) : [];
-      const pl = isMed ? plMed : plOdo;
 
       if (rec === 0 && desp === 0 && pl.length > 0) {
         rec = pl.reduce((acc, p) => acc + p.rec, 0);
@@ -3902,8 +3767,6 @@ function tabelaResultadoPorProduto(bloco) {
       }
       const despCheia = desp + copayProd;
       const impactoCopay = despCheia > 0 ? (copayProd / despCheia) * 100 : 0;
-      const sinLiquida = rec > 0 ? (desp / rec) * 100 : 0;
-      const sinBruta = rec > 0 ? (despCheia / rec) * 100 : 0;
 
       return {
         prodKey,
@@ -3934,8 +3797,6 @@ function tabelaResultadoPorProduto(bloco) {
     const totCopayGrp = isMed ? copayTotal : 0;
     const totDespCheiaGrp = totDespGrp + totCopayGrp;
     const totImpactoGrp = totDespCheiaGrp > 0 ? (totCopayGrp / totDespCheiaGrp) * 100 : 0;
-    const totSinLiquidaGrp = totRecGrp > 0 ? (totDespGrp / totRecGrp) * 100 : 0;
-    const totSinBrutaGrp = totRecGrp > 0 ? (totDespCheiaGrp / totRecGrp) * 100 : 0;
 
     // Filtra apenas produtos com valores efetivos
     const produtosVisiveis = produtosCalculados.filter((p) => {
@@ -3991,7 +3852,6 @@ function tabelaResultadoPorProduto(bloco) {
       const isUltimaLinha = (grpIdx === gruposConfig.length - 1 && idx === produtosVisiveis.length - 1) || celulasLinhas.length >= 3;
       const celProduto = {
         texto: p.nomeExibicao,
-        html: gerarHtmlHoverProduto(p.nomeExibicao, p.planos, isUltimaLinha),
         classe: 'col-produto plano-item',
       };
 
@@ -4109,8 +3969,6 @@ function tabelaDespesaProdutoMensal(bloco) {
   const idsR1 = idsDaFonte({ assinatura: 'produtoResumo', todos: true });
   const itensR1 = idsR1.flatMap((id) => itensDoRelatorio(id));
 
-  const planosPorProd = agruparPlanosPorProduto();
-
   const ehMedicina = (g) => {
     const s = normTexto(g);
     return s.includes('med') || s === 'm';
@@ -4161,7 +4019,6 @@ function tabelaDespesaProdutoMensal(bloco) {
       return it && num(it.Valor) !== null ? num(it.Valor) : 0;
     });
     const temValor = valoresMeses.some((v) => v !== null && Math.abs(v) > 0.001);
-    const pl = planosPorProd.get(pKey) || [];
     return {
       pKey,
       nomeExibicao: capitalizar(pKey),
@@ -4185,7 +4042,6 @@ function tabelaDespesaProdutoMensal(bloco) {
 
   const prodsOdo = ORDEM_PRODS.map((pKey) => {
     let valoresMeses = meses.map(() => 0);
-    const pl = planosPorProd.get('ODONTO_' + pKey) || (!temOdontoEsp && pKey === 'PREMIUM' ? (planosPorProd.get('ODONTOLOGIA') || []) : []);
 
     if (itensDespOdoR11.length > 0) {
       const matchItens = itensDespOdoR11.filter((d) => igual(d.Grupo, pKey) || (d.Linha && igual(d.Linha, pKey)));
@@ -4258,7 +4114,6 @@ function tabelaDespesaProdutoMensal(bloco) {
       const isUltimaLinha = (grpIdx === grupos.length - 1 && idx === grp.produtos.length - 1) || celulasLinhas.length >= 3;
       const celProduto = {
         texto: p.nomeExibicao,
-        html: gerarHtmlHoverProduto(p.nomeExibicao, p.planos, isUltimaLinha),
         classe: 'col-produto plano-item',
       };
       const rowProd = [
@@ -4488,13 +4343,10 @@ function resolverNomeCanonicoPrestador(nomeBruto, gruposCustom = null, isLaborat
     for (const a of g.aliases) {
       const na = normTexto(a);
       if (nBruto.includes(na) || nLimpo.includes(na)) {
-        return g.nomeGrupo;
       }
     }
   }
 
-  // Fallback: se não estiver no dicionário, usa o nome limpo
-  return limpo || nomeBruto;
 }
 
 function extrairIdentificadorUnidade(nomeOriginal, nomeGrupo) {
@@ -4528,11 +4380,9 @@ function extrairIdentificadorUnidade(nomeOriginal, nomeGrupo) {
   if (partes.length > 1) {
     const suf = partes[partes.length - 1].trim();
     if (suf && suf.length > 1 && !/^(sp|rj|mg|sa|s\/a|ltda)$/i.test(suf)) {
-      return suf;
     }
   }
   const limpo = limparNomePrestador(s);
-  return limpo !== nomeGrupo ? limpo : 'Unidade Principal';
 }
 
 function tabelaTopPrestadores(bloco) {
@@ -4632,10 +4482,8 @@ function tabelaTopPrestadores(bloco) {
       const g = mapaGrupos.get(nomeCanonico);
       const ehMultiplo = g && g.unidades.length > 1;
 
-      let nomeExibicao = nomeCanonico;
       if (ehMultiplo) {
         const idUnid = extrairIdentificadorUnidade(nomeOriginal, nomeCanonico);
-        nomeExibicao = idUnid ? `${nomeCanonico} · ${idUnid}` : nomeOriginal;
       }
 
       return {
@@ -4680,7 +4528,6 @@ function tabelaTopPrestadores(bloco) {
 
   const celulas = topLinhas.map((g) => {
     const row = [
-      { texto: g.nome },
       { texto: formatar(g.despesaTotal, 'moeda') },
       { texto: formatar(g.pctDespesa, 'percentual') },
     ];
@@ -4809,13 +4656,8 @@ function tabelaDeBloco(bloco) {
       let fmt = (isLinhaVar && (String(bruto).includes('%') || bruto === '—')) ? 'texto' : c.formato;
       if (bloco.id === 'indicadores-benchmark') {
         if (isUti) {
-          if (/empresa|carteira|benchmark|frequencia|frequência/i.test(c.rotulo)) {
             fmt = 'percentual';
-          } else if (/varia[çc][ãa]o|dif/i.test(c.rotulo)) {
-            fmt = 'pontos';
           }
-        } else if (/quantidade|qtd/i.test(c.rotulo) && String(l.__eixo ?? '').toLowerCase().includes('exame')) {
-          fmt = 'decimal';
         }
       }
       const n = num(bruto);
@@ -4928,7 +4770,6 @@ function tabelaDeBloco(bloco) {
   if (bloco.id === 'checkup-pendentes') {
     const idsR22 = idsDaFonte({ assinatura: 'checkupPendentes' });
     const itensR22 = idsR22.length ? idsR22.flatMap(itensDoRelatorio) : itensDoRelatorio(22);
-    const planosNaoPremium = [...new Set(itensR22.filter((d) => igual(d.Coluna, 'Plano') && !/premium/i.test(String(d.Valor || ''))).map((d) => d.Valor))];
     if (planosNaoPremium.length > 0) {
       const msgLib = `Liberalidade contratual identificada (vouchers emitidos no${planosNaoPremium.length > 1 ? 's planos ' : ' plano '}${planosNaoPremium.join(', ')}).`;
       notaFinal = notaFinal ? `${notaFinal} ${msgLib}` : msgLib;
@@ -4940,22 +4781,12 @@ function tabelaDeBloco(bloco) {
 
   let superHeadersBloco = bloco.superHeaders ? JSON.parse(JSON.stringify(bloco.superHeaders)) : null;
   if (bloco.id === 'evento-benchmark' && Array.isArray(superHeadersBloco)) {
-    const shComp = superHeadersBloco.find((sh) => /período atual|periodo atual/i.test(sh.titulo));
-    if (shComp) {
       try {
         const { rotAnt, rotAtu } = typeof obterPeriodosFormatadosAnalise === 'function' ? obterPeriodosFormatadosAnalise() : {};
-        if (rotAtu && rotAnt) {
-          shComp.titulo = `PERÍODO ATUAL (${rotAtu}) × ANTERIOR (${rotAnt})`;
         }
       } catch (_) {}
-    }
   } else if (bloco.id === 'mix-le-rc' && Array.isArray(superHeadersBloco)) {
     try {
-      const { rotAnt, rotAtu } = typeof obterPeriodosFormatadosAnalise === 'function' ? obterPeriodosFormatadosAnalise() : {};
-      if (rotAnt) {
-        const shAnt = superHeadersBloco.find((sh) => /período anterior|periodo anterior/i.test(sh.titulo));
-        if (shAnt) shAnt.titulo = `PERÍODO ANTERIOR (${rotAnt})`;
-      }
       if (rotAtu) {
         const shAtu = superHeadersBloco.find((sh) => /período atual|periodo atual/i.test(sh.titulo));
         if (shAtu) shAtu.titulo = `PERÍODO ATUAL (${rotAtu})`;
@@ -4965,9 +4796,6 @@ function tabelaDeBloco(bloco) {
     const totalColunasEsperadas = superHeadersBloco.reduce((acc, sh) => acc + (sh.colspan || 1), 0);
     if (totalColunasEsperadas !== colunas.length) {
       const diff = totalColunasEsperadas - colunas.length;
-      const shAcesso = superHeadersBloco.find((sh) => /acesso/i.test(sh.titulo));
-      if (shAcesso && (shAcesso.colspan - diff) > 0) {
-        shAcesso.colspan -= diff;
       }
     }
   } else if (bloco.id === 'rede-livre-escolha-mensal' && Array.isArray(superHeadersBloco)) {
@@ -5467,7 +5295,6 @@ function renderFicha(bloco, ctx) {
     <div class="card card-ficha" data-card="padrao" data-campo="${campoNome}" title="${esc(c.valor)}">
       ${c.icone ? `<div class="card-icon">${esc(c.icone)}</div>` : ''}
       <h3 class="card-ficha-rotulo">${esc(c.rotulo)}</h3>
-      <p class="card-ficha-valor ${ehCadastral ? 'card-ficha-valor-cadastral' : ''}" ${ehPeriodo ? 'data-tipo="periodo"' : ''}>${esc(c.valor)}</p>
     </div>`;
   }).join('');
 
@@ -5659,7 +5486,6 @@ function gerarTabelaCheckupPorPlano() {
     { rotulo: 'Vouchers Emitidos', numerica: true },
     { rotulo: 'Realizados', numerica: true },
     { rotulo: 'Taxa de Conversão (%)', numerica: true },
-    { rotulo: 'Custo Estimado (R$)', numerica: true },
   ];
 
   let totEmitidos = 0;
@@ -5745,11 +5571,6 @@ function renderKpi(bloco, ctx) {
   const visiveis = kpis.filter((k) => !k.oculto);
   const cards = visiveis.map((k) => UI.cardKpi({ rotulo: k.rotulo, valor: k.formatado, sub: k.sub, estado: k.estado })).join('');
   let extra = '', dadosExtra = null;
-  if (bloco.id === 'checkup') {
-    const tabPlano = gerarTabelaCheckupPorPlano();
-    if (tabPlano) {
-      extra = typeof tabPlano === 'string' ? tabPlano : tabPlano.html;
-      dadosExtra = tabPlano.dados || { tipo: 'checkupPorPlano' };
     } else if (bloco.tabelaExtra) {
       const t = tabelaDeBloco(bloco.tabelaExtra);
       if (!t.vazio) { extra = `<div class="tabela-extra">${t.html}</div>`; dadosExtra = t.dados; }
@@ -6180,14 +6001,12 @@ function renderKpiInternacao(bloco, ctx) {
   const cardsHtml = `
     <div class="kpi-internacao-grid kpi-internacao-grid--duplo">
       ${miniCardHtml({
-        rotulo: 'Custo total das internações',
         valor: num(m.despTotHosp) !== null && m.despTotHosp >= 0 ? formatar(m.despTotHosp, 'moeda') : '—',
         estado: 'neutro',
         badge: null,
         sub: m.pctTotHospCartStr !== '—' ? `${m.pctTotHospCartStr} da despesa assistencial total` : 'Despesa hospitalar acumulada'
       })}
       ${miniCardHtml({
-        rotulo: 'Custo médio / internação',
         valor: num(m.custoMedioInt) !== null && m.custoMedioInt >= 0 ? formatar(m.custoMedioInt, 'moeda') : '—',
         estado: m.varCustoMedioPct !== null ? (m.varCustoMedioPct > 0 ? 'negativo' : 'positivo') : 'neutro',
         badge: m.custoMedioIntBmk && m.varCustoMedioPct !== null ? {
@@ -6212,7 +6031,6 @@ function renderKpiInternacao(bloco, ctx) {
             <th class="num" style="white-space: nowrap;">Despesa</th>
             <th class="num" style="white-space: nowrap;">%&nbsp;${esc(nomeEmpresa)}</th>
             <th class="num" style="white-space: nowrap;">%&nbsp;Bench</th>
-            <th class="num" style="white-space: nowrap;">Diferença</th>
             <th class="num" style="white-space: nowrap;">Var. Ano 2×1</th>
           </tr>
         </thead>
@@ -6223,7 +6041,6 @@ function renderKpiInternacao(bloco, ctx) {
               <td class="num" ${r.isTotal ? 'style="font-weight: 700;"' : ''}>${esc(r.despesa)}</td>
               <td class="num" ${r.isTotal ? 'style="font-weight: 700;"' : ''}>${esc(r.pctCart)}</td>
               <td class="num" ${r.isTotal ? 'style="font-weight: 700;"' : ''}>${esc(r.pctBmk)}</td>
-              <td class="num" style="font-weight: 600; ${r.difNum !== null && r.difNum > 0 ? 'color: #D32F2F;' : 'color: #2E7D32;'}">${esc(r.dif)}</td>
               <td class="num" style="font-weight: 600; ${r.varAnualNum !== null && r.varAnualNum > 0 ? 'color: #D32F2F;' : (r.varAnualNum !== null && r.varAnualNum < 0 ? 'color: #2E7D32;' : '')}">${esc(r.varAnual || '—')}</td>
             </tr>
           `).join('')}
@@ -6356,15 +6173,10 @@ function renderKpiInternacao(bloco, ctx) {
         <span class="internacao-metrica-linha"><strong>${m.pctTotHospCartStr}</strong> da despesa assistencial</span>
       </div>
       <div class="internacao-metrica-bloco">
-        <span class="internacao-metrica-titulo">Custo médio por internação:</span>
         <span class="internacao-metrica-linha">
           <strong>${m.custoMedioInt > 0 ? formatar(m.custoMedioInt, 'moeda') + ' / int.' : '—'}</strong>
           ${m.custoMedioIntBmk > 0 ? ` (Bmk: ${formatar(m.custoMedioIntBmk, 'moeda')})` : ''}
         </span>
-      </div>
-      <div class="internacao-metrica-bloco">
-        <span class="internacao-metrica-titulo">Diferença vs Benchmark:</span>
-        <span class="internacao-metrica-linha"><strong>${m.difTotHospPp !== null ? formatar(m.difTotHospPp, 'pontos') : '—'}</strong> ${m.difTotHospPp !== null && m.difTotHospPp > 0 ? 'acima do benchmark' : 'vs benchmark Omint'}</span>
       </div>
     </div>
   `;
@@ -8099,34 +7911,6 @@ function extrairDadosSinistralidadePeriodos(fonteBloco, grupoFiltro = null) {
       itensBrutos = itensBrutos.filter(ehGrupoMed);
     } else if (itensBrutos.some(ehGrupoOdo)) {
       itensBrutos = itensBrutos.filter((d) => !ehGrupoOdo(d));
-    }
-  } else if (grupoFiltro === 'consolidado') {
-    // Medicina + Odonto: se o relatório vier separado por grupo, soma receita e despesa por mês/Ordem
-    // e recalcula a sinistralidade; sem separação por grupo, os itens já estão consolidados.
-    const ehGrupoMedOdo = (d) => ['medicina', 'odontologia'].includes(normalizarGrupo(d.Grupo));
-    const semGrupoComSin = itensBrutos.some((d) => !ehGrupoMedOdo(d) && /sinistralidade/i.test(String(d.Linha || '')));
-    const itensGrupo = itensBrutos.filter(ehGrupoMedOdo);
-    if (itensGrupo.length && !semGrupoComSin) {
-      const temDespLiq = itensGrupo.some((d) => /despesa/i.test(String(d.Linha || '')) && /liquida/i.test(String(d.Linha || '')));
-      const acumulado = new Map();
-      itensGrupo.forEach((d) => {
-        const lin = String(d.Linha || '');
-        const ehRec = /receita/i.test(lin);
-        const ehDesp = /despesa/i.test(lin) && (!temDespLiq || /liquida/i.test(lin));
-        const v = num(d.Valor);
-        if ((!ehRec && !ehDesp) || v === null) return;
-        const chave = `${d.Coluna}|${d.Ordem ?? ''}`;
-        if (!acumulado.has(chave)) acumulado.set(chave, { Coluna: d.Coluna, Ordem: d.Ordem, rec: 0, desp: 0, temRec: false, temDesp: false });
-        const a = acumulado.get(chave);
-        if (ehRec) { a.rec += v; a.temRec = true; } else { a.desp += v; a.temDesp = true; }
-      });
-      itensBrutos = [...acumulado.values()].flatMap((a) => [
-        ...(a.temRec ? [{ Coluna: a.Coluna, Ordem: a.Ordem, Linha: 'Receita', Valor: String(a.rec) }] : []),
-        ...(a.temDesp ? [{ Coluna: a.Coluna, Ordem: a.Ordem, Linha: 'Despesa', Valor: String(a.desp) }] : []),
-        ...(a.temRec && a.temDesp && a.rec > 0
-          ? [{ Coluna: a.Coluna, Ordem: a.Ordem, Linha: 'Sinistralidade', Valor: String((a.desp / a.rec) * 100) }]
-          : []),
-      ]);
     }
   }
 
@@ -9934,7 +9718,6 @@ function exportarPDF() {
     return slideHtml(s, i + 1);
   }).join('');
   document.body.appendChild(palco);
-  document.body.classList.add('imprimindo');
   ajustarConteudo(palco);
 
   const { dataInicial, dataFinal } = parametros();

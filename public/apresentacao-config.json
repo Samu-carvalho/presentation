@@ -65,7 +65,6 @@
     "indicadores": {
       "linhaEm": [
         "Consultas PMPM",
-        "Consulta por associado"
       ]
     },
     "sinistralidadeProdutoMensal": {
@@ -231,7 +230,6 @@
       "id": "ficha",
       "tipo": "ficha",
       "eyebrow": " ",
-      "titulo": "Ficha do contrato",
       "campos": [
         {
           "rotulo": "Empresa",
@@ -475,7 +473,6 @@
         },
         {
           "id": "grupoFamiliar",
-          "rotulo": "Vidas por titular",
           "formato": "decimal",
           "derivado": {
             "de": [
@@ -702,7 +699,6 @@
           "formato": "moeda"
         },
         {
-          "rotulo": "Custo Mensal per capita",
           "de": [
             "Custo PMPM"
           ],
@@ -729,7 +725,6 @@
       "tipo": "grafico",
       "estilo": "barra",
       "eyebrow": " ",
-      "titulo": "Custo por vida por faixa etária",
       "ordenar": false,
       "fonte": {
         "assinatura": "perfil",
@@ -861,7 +856,6 @@
         },
         {
           "id": "pmpm",
-          "rotulo": "Custo por vida",
           "formato": "moedaInteira",
           "derivado": {
             "de": [
@@ -1013,7 +1007,6 @@
         },
         {
           "id": "pmpm",
-          "rotulo": "Custo por vida",
           "formato": "moedaInteira",
           "derivado": {
             "de": [
@@ -1217,7 +1210,6 @@
           "calculo": "impactoCoparticipacao"
         },
         {
-          "rotulo": "Sinistralidade",
           "rotuloComCopay": "Sinistralidade líquida",
           "de": [
             "Sinistralidade",
@@ -1315,7 +1307,6 @@
           "calculo": "impactoCoparticipacao"
         },
         {
-          "rotulo": "Sinistralidade",
           "rotuloComCopay": "Sinistralidade líquida",
           "de": [
             "SINISTRALIDADE"
@@ -1554,17 +1545,14 @@
           "formato": "inteiro"
         },
         {
-          "rotulo": "Custo (R$)",
           "de": [
             "Custo (R$)",
             "Custo",
             "Total",
             "Valor"
           ],
-          "formato": "decimal"
         },
         {
-          "rotulo": "Custo Total %",
           "de": [
             "Custo Total %",
             "% Empresa",
@@ -1583,25 +1571,10 @@
           "formato": "percentual2"
         },
         {
-          "rotulo": "Ano 1",
           "de": [
-            "Ano 1",
-            "Anterior",
-            "Ano Anterior"
           ],
-          "formato": "decimal"
         },
         {
-          "rotulo": "Ano 2",
-          "de": [
-            "Ano 2",
-            "Atual",
-            "Ano Atual"
-          ],
-          "formato": "decimal"
-        },
-        {
-          "rotulo": "Variação",
           "de": [
             "VarCusto",
             "VarCustoPct",
@@ -1616,22 +1589,6 @@
       ],
       "ordenar": false,
       "destacarRegex": "total",
-      "nota": "",
-      "comentarios": true,
-      "superHeaders": [
-        {
-          "titulo": "Evento",
-          "colspan": 1
-        },
-        {
-          "titulo": "CONSOLIDADO DE UTILIZAÇÃO DOS SERVIÇOS MÉDICOS POR CUSTO",
-          "colspan": 4
-        },
-        {
-          "titulo": "PERÍODO ATUAL × ANTERIOR",
-          "colspan": 3
-        }
-      ]
     },
     {
       "id": "evento-mensal",
@@ -1657,7 +1614,6 @@
       "garantirMesesPeriodo": true,
       "ordenar": false,
       "destacarRegex": "total|Total",
-      "nota": "",
       "comentarios": true,
       "compacta": true
     },
@@ -1767,16 +1723,8 @@
           "colspan": 1
         },
         {
-          "titulo": "PERÍODO ANTERIOR (ANO 1)",
-          "colspan": 3
         },
         {
-          "titulo": "PERÍODO ATUAL (ANO 2)",
-          "colspan": 3
-        },
-        {
-          "titulo": "ACESSO & BENCHMARK",
-          "colspan": 5
         }
       ],
       "colunas": [
@@ -1787,104 +1735,53 @@
         {
           "rotulo": "Quantidade",
           "de": [
-            "QtdAnt",
-            "QuantidadeAnt",
-            "QuantidadeAnoAnterior"
-          ],
-          "formato": "inteiro"
-        },
-        {
-          "rotulo": "Custo (R$)",
-          "de": [
-            "CustoAnt",
-            "Ano 1",
-            "CustoAnoAnterior",
-            "_vAnt"
-          ],
-          "formato": "moeda",
-          "calculo": "custoAnterior"
-        },
-        {
-          "rotulo": "% do custo total",
-          "de": [
-            "PercTotalAnt",
-            "PercTotalAnoAnterior",
-            "PercTotalAnterior"
-          ],
-          "formato": "percentual",
-          "escala": 100,
-          "calculo": "percentualCustoAnterior"
-        },
-        {
-          "rotulo": "Quantidade",
-          "de": [
             "Quantidade",
             "Qtd"
           ],
           "formato": "inteiro"
         },
         {
-          "rotulo": "Custo (R$)",
           "de": [
             "Custo",
             "Total",
             "Valor"
           ],
-          "formato": "moeda",
-          "calculo": "custoEvento"
         },
         {
-          "rotulo": "% do custo total",
           "de": [
             "PercTotal"
           ],
-          "formato": "percentual",
           "escala": 100
         },
         {
-          "rotulo": "% Benchmark",
           "de": [
             "PercBench"
           ],
-          "formato": "percentual",
           "escala": 100
         },
         {
-          "rotulo": "Rede credenciada",
           "de": [
             "PercRC"
           ],
-          "formato": "percentual",
           "escala": 100
         },
         {
-          "rotulo": "Livre escolha",
           "de": [
             "PercLE"
           ],
-          "formato": "percentual",
           "escala": 100,
           "alerta": {
             "acima": 20
           }
         },
         {
-          "rotulo": "Δ Utilização RC",
           "de": [
             "VarRC",
             "PercVarRC"
           ],
-          "formato": "pontos",
-          "alerta": {
-            "abaixo": 0,
-            "invertido": true
-          }
         },
         {
-          "rotulo": "Var. Período Anterior",
           "de": [
-            "VarCusto",
-            "PercVarCusto"
           ],
           "formato": "variacao",
           "alerta": {
@@ -1943,7 +1840,6 @@
           "formato": "inteiro"
         },
         {
-          "rotulo": "Empresa",
           "de": [
             "Indicador"
           ],
@@ -1976,7 +1872,6 @@
       "id": "kpi-internacao",
       "tipo": "kpiInternacao",
       "eyebrow": " ",
-      "titulo": "Custo médio de internação e benchmark hospitalar",
       "fonte": {
         "assinatura": "indicadores"
       }
@@ -2257,14 +2152,10 @@
     },
     {
       "id": "top-frequencia-a",
-      "ativo": false,
       "tipo": "tabela",
       "eyebrow": " ",
-      "titulo": "20 maiores usuários por frequência · Consultas · Parte 1",
       "colunasIguais": true,
       "fonte": {
-        "assinatura": "topFrequencia",
-        "indice": 0,
         "pivot": {
           "eixo": "Linha",
           "serie": "Coluna"
@@ -2277,7 +2168,6 @@
           "formato": "ranking"
         },
         {
-          "rotulo": "Frequência",
           "de": [
             "Frequencia"
           ],
@@ -2299,12 +2189,10 @@
         }
       ],
       "ordenar": {
-        "por": "Frequência"
       },
       "inicio": 0,
       "limite": 10,
       "compacta": true,
-      "nota": ""
     },
     {
       "id": "top-frequencia-a-pt2",
@@ -2364,11 +2252,8 @@
       "id": "top-frequencia-b",
       "tipo": "tabela",
       "eyebrow": " ",
-      "titulo": "20 maiores usuários por frequência · Pronto Socorro · Parte 1",
       "colunasIguais": true,
       "fonte": {
-        "assinatura": "topFrequencia",
-        "indice": 1,
         "pivot": {
           "eixo": "Linha",
           "serie": "Coluna"
@@ -2381,7 +2266,6 @@
           "formato": "ranking"
         },
         {
-          "rotulo": "Frequência",
           "de": [
             "Frequencia"
           ],
@@ -2403,12 +2287,10 @@
         }
       ],
       "ordenar": {
-        "por": "Frequência"
       },
       "inicio": 0,
       "limite": 10,
       "compacta": true,
-      "nota": ""
     },
     {
       "id": "top-frequencia-b-pt2",
@@ -2461,17 +2343,13 @@
       "compacta": true,
       "totalizar": true,
       "rotuloTotal": "Total",
-      "nota": ""
     },
     {
       "id": "top-frequencia-c",
       "tipo": "tabela",
       "eyebrow": " ",
-      "titulo": "20 maiores usuários por frequência · Terapias Seriadas · Parte 1",
       "colunasIguais": true,
       "fonte": {
-        "assinatura": "topFrequencia",
-        "indice": 2,
         "pivot": {
           "eixo": "Linha",
           "serie": "Coluna"
@@ -2484,7 +2362,6 @@
           "formato": "ranking"
         },
         {
-          "rotulo": "Frequência",
           "de": [
             "Frequencia"
           ],
@@ -2506,12 +2383,10 @@
         }
       ],
       "ordenar": {
-        "por": "Frequência"
       },
       "inicio": 0,
       "limite": 10,
       "compacta": true,
-      "nota": ""
     },
     {
       "id": "top-frequencia-c-pt2",
@@ -2564,13 +2439,11 @@
       "compacta": true,
       "totalizar": true,
       "rotuloTotal": "Total",
-      "nota": ""
     },
     {
       "id": "checkup-antigo",
       "tipo": "kpi",
       "eyebrow": " ",
-      "titulo": "Benefício de check-up (versão antiga)",
       "nota": "",
       "itens": [
         {
@@ -2625,7 +2498,6 @@
         },
         {
           "id": "custoTotal",
-          "rotulo": "Custo total",
           "formato": "moeda",
           "fonte": {
             "assinatura": "checkup",
@@ -2637,25 +2509,6 @@
               ],
               "linhaEm": [
                 "Custo do CheckUp"
-              ]
-            },
-            "agregacao": "primeiro"
-          }
-        },
-        {
-          "id": "custoMedio",
-          "rotulo": "Custo médio",
-          "formato": "moeda",
-          "fonte": {
-            "assinatura": "checkup",
-            "filtro": {
-              "ordem": 1,
-              "colunaEm": [
-                "Acumulado",
-                "ACUMULADO"
-              ],
-              "linhaEm": [
-                "Custo Médio do CheckUp"
               ]
             },
             "agregacao": "primeiro"
@@ -2683,7 +2536,6 @@
         },
         {
           "id": "impactoCustoTotal",
-          "rotulo": "Impacto no custo",
           "formato": "percentual",
           "fonte": {
             "assinatura": "checkup",
@@ -2732,7 +2584,6 @@
             "formato": "inteiro"
           },
           {
-            "rotulo": "Custo",
             "de": [
               "Custo do CheckUp"
             ],
@@ -2799,7 +2650,6 @@
         },
         {
           "id": "custoTotal",
-          "rotulo": "Custo total",
           "formato": "moeda",
           "fonte": {
             "assinatura": "checkup",
@@ -2818,7 +2668,6 @@
         },
         {
           "id": "custoMedio",
-          "rotulo": "Custo médio",
           "formato": "moeda",
           "fonte": {
             "assinatura": "checkup",
@@ -2857,7 +2706,6 @@
         },
         {
           "id": "impactoCustoTotal",
-          "rotulo": "Impacto no custo",
           "formato": "percentual",
           "fonte": {
             "assinatura": "checkup",
@@ -2905,14 +2753,12 @@
             "formato": "inteiro"
           },
           {
-            "rotulo": "Custo",
             "de": [
               "Custo do CheckUp"
             ],
             "formato": "moeda"
           },
           {
-            "rotulo": "Custo médio",
             "de": [
               "Custo Médio do CheckUp"
             ],
