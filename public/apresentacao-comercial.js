@@ -2175,7 +2175,145 @@ function resolverFonteTabela(fonte) {
 
   // Para o slide de indicadores, garantir ordenação amigável: Consultas, Exames, Exames por consulta, Pronto-Socorro, Terapias, Internações, Diárias, UTI, Média de permanência
   if (isIndicadores && res.linhas && res.linhas.length) {
-    // Oculta linhas sem valores retornados pela API (ex: Pronto-Socorro ou Terapias caso não venham preenchidos no contrato)
+    // 1. Extrai quantidades oficiais para cálculos e checagens cruzadas
+    const getQtdPorEixo = (termo) => {
+      const row = res.linhas.find((l) => normTexto(l.__eixo).includes(termo));
+      return row ? num(row.Quantidade) : null;
+    };
+    const qtdConsultas = getQtdPorEixo('consultas');
+    const qtdExames = getQtdPorEixo('exames');
+    const qtdInt = getQtdPorEixo('interna') ?? getQtdPorEixo('int 1000');
+    const qtdDiarias = getQtdPorEixo('diaria') ?? getQtdPorEixo('diárias 1000');
+    const qtdDiariasUTI = getQtdPorEixo('uti');
+
+    // 2. Obtém a soma de vidas-mês oficial de Medicina a partir do Relatório 8 (vidasMensal)
+    let somaVidasMes = 0;
+    try {
+      const idsVidas = idsDaFonte({ assinatura: 'vidasMensal', todos: true });
+      const itensVidasBrutos = idsVidas.flatMap((id) => itensDoRelatorio(id));
+      const itensVidasOrd1 = itensVidasBrutos.filter((d) => Number(d.Ordem) === 1 || d.Ordem == null);
+      const baseVidas = itensVidasOrd1.length ? itensVidasOrd1 : itensVidasBrutos;
+      const itensGrupo = baseVidas.filter((d) => d.Grupo == null || ['Medicina', 'M'].some((g) => igualGrupo(d.Grupo, g)));
+      const meses = [...new Set(itensGrupo.map((d) => d.Coluna))].filter((c) => chavePeriodo(c) !== null);
+      if (meses.length > 0) {
+        meses.forEach((m) => {
+          const rowTot = itensGrupo.find((d) => /^(total)$/i.test(String(d.Linha || '').trim()) && igual(d.Coluna, m));
+          const valTot = rowTot ? num(rowTot.Valor) : null;
+          if (valTot !== null && valTot > 0) {
+            somaVidasMes += valTot;
+          } else {
+            const somaPlanos = itensGrupo
+              .filter((d) => !/^(total|acumulado)$/i.test(String(d.Linha || '').trim()) && igual(d.Coluna, m))
+              .reduce((acc, d) => acc + (num(d.Valor) || 0), 0);
+            if (somaPlanos > 0) somaVidasMes += somaPlanos;
+          }
+        });
+      }
+    } catch (_) {}
+
+    // 3. Benchmarks oficiais Omint (Slide 25 / Word) caso não retornem preenchidos da API
+    const BENCHMARKS_PADRAO = {
+      'consultas': 0.44,
+      'exames': 3.23,
+      'exames por consulta': 7.34,
+      'internacoes por 1.000 vidas/mes': 15.94,
+      'diarias por 1.000 vidas/mes': 33.80,
+      'indice de uti': 23.04,
+      'media de permanencia': 2.12,
+    };
+
+    // 4. Se "Exames por consulta" não veio no R5 mas há consultas e exames, constrói dinamicamente
+    const temExamesPorConsulta = res.linhas.some((l) => normTexto(l.__eixo).includes('exame por consulta') || normTexto(l.__eixo).includes('exames por consulta'));
+    if (!temExamesPorConsulta && qtdConsultas > 0 && qtdExames > 0) {
+      const indExCons = qtdExames / qtdConsultas;
+      const bmkExCons = 7.34;
+      const difExCons = ((indExCons - bmkExCons) / bmkExCons) * 100;
+      res.linhas.push({
+        __eixo: 'Exames por consulta',
+        Quantidade: null,
+        Indicador: indExCons,
+        Benchmark: bmkExCons,
+        Dif: difExCons,
+        DIF: difExCons,
+      });
+    }
+
+    // 5. Se "Média de permanência" não veio no R5 mas há diárias e internações, constrói dinamicamente
+    const temMediaPermanencia = res.linhas.some((l) => normTexto(l.__eixo).includes('permanen'));
+    if (!temMediaPermanencia && qtdDiarias > 0 && qtdInt > 0) {
+      const indPerm = qtdDiarias / qtdInt;
+      const bmkPerm = 2.12;
+      const difPerm = ((indPerm - bmkPerm) / bmkPerm) * 100;
+      res.linhas.push({
+        __eixo: 'Média de permanência',
+        Quantidade: null,
+        Indicador: indPerm,
+        Benchmark: bmkPerm,
+        Dif: difPerm,
+        DIF: difPerm,
+      });
+    }
+
+    // 6. Recalcular e sanitizar cada indicador para garantir exatidão atuarial
+    res.linhas.forEach((l) => {
+      const k = normTexto(l.__eixo);
+
+      // Quantidade nula obrigatória para razões e médias (não são contagem de eventos)
+      if (k.includes('exame por consulta') || k.includes('exames por consulta') || k.includes('permanen')) {
+        l.Quantidade = null;
+      }
+
+      // Preenche benchmark padrão se ausente
+      if (num(l.Benchmark) === null) {
+        for (const [chaveBmk, valorBmk] of Object.entries(BENCHMARKS_PADRAO)) {
+          if (k.includes(chaveBmk)) {
+            l.Benchmark = valorBmk;
+            break;
+          }
+        }
+      }
+
+      // Validação / Recálculo do Indicador caso a API não o tenha retornado (ou valor nulo)
+      const indAtual = num(l.Indicador);
+      if (indAtual === null) {
+        if (k.includes('consulta') && !k.includes('exame') && somaVidasMes > 0 && qtdConsultas > 0) {
+          l.Indicador = qtdConsultas / somaVidasMes;
+        } else if (k.includes('exame') && !k.includes('consulta') && somaVidasMes > 0 && qtdExames > 0) {
+          l.Indicador = qtdExames / somaVidasMes;
+        } else if (k.includes('exame por consulta') && qtdConsultas > 0 && qtdExames > 0) {
+          l.Indicador = qtdExames / qtdConsultas;
+        } else if ((k.includes('pronto') || k.includes('urgenc')) && somaVidasMes > 0 && num(l.Quantidade) > 0) {
+          l.Indicador = num(l.Quantidade) / somaVidasMes;
+        } else if (k.includes('terapia') && somaVidasMes > 0 && num(l.Quantidade) > 0) {
+          l.Indicador = num(l.Quantidade) / somaVidasMes;
+        } else if (k.includes('interna') && somaVidasMes > 0 && qtdInt > 0) {
+          l.Indicador = (qtdInt / somaVidasMes) * 1000;
+        } else if (k.includes('diaria') && somaVidasMes > 0 && qtdDiarias > 0) {
+          l.Indicador = (qtdDiarias / somaVidasMes) * 1000;
+        } else if (k.includes('permanen') && qtdDiarias > 0 && qtdInt > 0) {
+          l.Indicador = qtdDiarias / qtdInt;
+        } else if (k.includes('uti') && qtdDiarias > 0 && qtdDiariasUTI > 0) {
+          l.Indicador = (qtdDiariasUTI / qtdDiarias) * 100;
+        }
+      }
+
+      // Validação / Recálculo do DIF
+      const indVal = num(l.Indicador);
+      const bmkVal = num(l.Benchmark);
+      if (k.includes('uti')) {
+        // Índice de UTI: diferença em pontos percentuais (p.p.)
+        if (l.Dif == null && l.DIF == null && indVal !== null && bmkVal !== null) {
+          l.Dif = l.DIF = indVal - bmkVal;
+        }
+      } else {
+        // Demais indicadores: variação percentual relativa vs Benchmark
+        if (l.Dif == null && l.DIF == null && indVal !== null && bmkVal !== null && bmkVal > 0) {
+          l.Dif = l.DIF = ((indVal - bmkVal) / bmkVal) * 100;
+        }
+      }
+    });
+
+    // 7. Oculta linhas sem valores retornados pela API (ex: Pronto-Socorro ou Terapias caso não venham no contrato)
     res.linhas = res.linhas.filter((l) => {
       const qtd = num(l.Quantidade);
       const ind = num(l.Indicador);
@@ -4415,13 +4553,43 @@ function tabelaDespesaProdutoMensal(bloco) {
       return it && num(it.Valor) !== null ? num(it.Valor) : 0;
     });
     const temValor = valoresMeses.some((v) => v !== null && Math.abs(v) > 0.001);
-    const pl = planosPorProd.get(pKey) || [];
+    let pl = planosPorProd.get(pKey) || [];
+    const somaMeses = valoresMeses.reduce((acc, v) => acc + (v || 0), 0);
+
+    let dadosConsolidados = null;
+    if ((!pl || pl.length === 0) && somaMeses > 0) {
+      let vidasCons = 0;
+      try {
+        const ultMes = mesesR8[mesesR8.length - 1];
+        if (ultMes) {
+          const itemR8 = itensMedR8.find(
+            (d) => normalizarChaveProduto(d.Linha) === pKey && d.Coluna === ultMes
+          );
+          if (itemR8 && num(itemR8.Valor) > 0) vidasCons = num(itemR8.Valor);
+        }
+      } catch (_) {}
+      const matchR1 = itensMedR1.filter((d) => normalizarChaveProduto(d.Coluna) === pKey || normalizarChaveProduto(d.Linha) === pKey);
+      if (!vidasCons && matchR1.length) {
+        vidasCons = num(matchR1.find((d) => igual(d.Linha, 'VIDAS'))?.Valor) || 0;
+      }
+      const recR1 = num(matchR1.find((d) => igual(d.Linha, 'RECEITA'))?.Valor) || 0;
+      const despR1 = num(matchR1.find((d) => igual(d.Linha, 'DESPESA'))?.Valor) || somaMeses;
+      const sinR1 = recR1 > 0 ? (despR1 / recR1) * 100 : (despR1 > 0 ? null : 0);
+      dadosConsolidados = {
+        vidas: vidasCons,
+        rec: recR1,
+        desp: despR1,
+        sin: sinR1,
+      };
+    }
+
     return {
       pKey,
       nomeExibicao: capitalizar(pKey),
       valoresMeses,
       temValor,
       planos: pl,
+      dadosConsolidados,
     };
   }).filter((p) => p.temValor);
 
@@ -4439,7 +4607,10 @@ function tabelaDespesaProdutoMensal(bloco) {
 
   const prodsOdo = ORDEM_PRODS.map((pKey) => {
     let valoresMeses = meses.map(() => 0);
-    const pl = planosPorProd.get('ODONTO_' + pKey) || (!temOdontoEsp && pKey === 'PREMIUM' ? (planosPorProd.get('ODONTOLOGIA') || []) : []);
+    let pl = planosPorProd.get('ODONTO_' + pKey) || [];
+    if (!pl.length && (!temOdontoEsp && pKey === 'PREMIUM')) {
+      pl = planosPorProd.get('ODONTOLOGIA') || [];
+    }
 
     if (itensDespOdoR11.length > 0) {
       const matchItens = itensDespOdoR11.filter((d) => igual(d.Grupo, pKey) || (d.Linha && igual(d.Linha, pKey)));
@@ -4462,6 +4633,34 @@ function tabelaDespesaProdutoMensal(bloco) {
       }
     }
 
+    const somaMeses = valoresMeses.reduce((acc, v) => acc + (v || 0), 0);
+    let dadosConsolidados = null;
+    if ((!pl || pl.length === 0) && somaMeses > 0) {
+      let vidasCons = 0;
+      try {
+        const ultMes = mesesR8[mesesR8.length - 1];
+        if (ultMes) {
+          const itemR8 = itensOdoR8.find(
+            (d) => normalizarChaveProduto(d.Linha) === pKey && d.Coluna === ultMes
+          );
+          if (itemR8 && num(itemR8.Valor) > 0) vidasCons = num(itemR8.Valor);
+        }
+      } catch (_) {}
+      const matchR1 = itensOdoR1.filter((d) => normalizarChaveProduto(d.Coluna) === pKey || normalizarChaveProduto(d.Linha) === pKey);
+      if (!vidasCons && matchR1.length) {
+        vidasCons = num(matchR1.find((d) => igual(d.Linha, 'VIDAS'))?.Valor) || 0;
+      }
+      const recR1 = num(matchR1.find((d) => igual(d.Linha, 'RECEITA'))?.Valor) || 0;
+      const despR1 = num(matchR1.find((d) => igual(d.Linha, 'DESPESA'))?.Valor) || somaMeses;
+      const sinR1 = recR1 > 0 ? (despR1 / recR1) * 100 : (despR1 > 0 ? null : 0);
+      dadosConsolidados = {
+        vidas: vidasCons,
+        rec: recR1,
+        desp: despR1,
+        sin: sinR1,
+      };
+    }
+
     const temValor = valoresMeses.some((v) => v !== null && Math.abs(v) > 0.001);
     return {
       pKey,
@@ -4469,6 +4668,7 @@ function tabelaDespesaProdutoMensal(bloco) {
       valoresMeses,
       temValor,
       planos: pl,
+      dadosConsolidados,
     };
   }).filter((p) => p.temValor);
 
@@ -8480,34 +8680,6 @@ function extrairDadosSinistralidadePeriodos(fonteBloco, grupoFiltro = null) {
       itensBrutos = itensBrutos.filter(ehGrupoMed);
     } else if (itensBrutos.some(ehGrupoOdo)) {
       itensBrutos = itensBrutos.filter((d) => !ehGrupoOdo(d));
-    }
-  } else if (grupoFiltro === 'consolidado') {
-    // Medicina + Odonto: se o relatório vier separado por grupo, soma receita e despesa por mês/Ordem
-    // e recalcula a sinistralidade; sem separação por grupo, os itens já estão consolidados.
-    const ehGrupoMedOdo = (d) => ['medicina', 'odontologia'].includes(normalizarGrupo(d.Grupo));
-    const semGrupoComSin = itensBrutos.some((d) => !ehGrupoMedOdo(d) && /sinistralidade/i.test(String(d.Linha || '')));
-    const itensGrupo = itensBrutos.filter(ehGrupoMedOdo);
-    if (itensGrupo.length && !semGrupoComSin) {
-      const temDespLiq = itensGrupo.some((d) => /despesa/i.test(String(d.Linha || '')) && /liquida/i.test(String(d.Linha || '')));
-      const acumulado = new Map();
-      itensGrupo.forEach((d) => {
-        const lin = String(d.Linha || '');
-        const ehRec = /receita/i.test(lin);
-        const ehDesp = /despesa/i.test(lin) && (!temDespLiq || /liquida/i.test(lin));
-        const v = num(d.Valor);
-        if ((!ehRec && !ehDesp) || v === null) return;
-        const chave = `${d.Coluna}|${d.Ordem ?? ''}`;
-        if (!acumulado.has(chave)) acumulado.set(chave, { Coluna: d.Coluna, Ordem: d.Ordem, rec: 0, desp: 0, temRec: false, temDesp: false });
-        const a = acumulado.get(chave);
-        if (ehRec) { a.rec += v; a.temRec = true; } else { a.desp += v; a.temDesp = true; }
-      });
-      itensBrutos = [...acumulado.values()].flatMap((a) => [
-        ...(a.temRec ? [{ Coluna: a.Coluna, Ordem: a.Ordem, Linha: 'Receita', Valor: String(a.rec) }] : []),
-        ...(a.temDesp ? [{ Coluna: a.Coluna, Ordem: a.Ordem, Linha: 'Despesa', Valor: String(a.desp) }] : []),
-        ...(a.temRec && a.temDesp && a.rec > 0
-          ? [{ Coluna: a.Coluna, Ordem: a.Ordem, Linha: 'Sinistralidade', Valor: String((a.desp / a.rec) * 100) }]
-          : []),
-      ]);
     }
   }
 
