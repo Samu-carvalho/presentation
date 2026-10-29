@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OMINT - Processando Analise</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body class="ai-thinking">
+  <div class="wrap">
+    <div class="chat">
+      <header class="chat__header">
+        <div class="brand">
+          <div class="brand__kicker">OMINT</div>
+          <h1 class="chat__title" id="pageTitle">Processando Analise</h1>
+          <div class="chat__subtitle" id="pageSubtitle">Aguarde enquanto os dados sao coletados e analisados</div>
+        </div>
+      </header>
+
+      <main class="chat__messages" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;">
+
+        <div id="progressBox" style="width:100%;max-width:560px;">
+          <div class="typing" id="typingIndicator" style="margin-bottom:18px;">
+            <span class="typing__label" id="stepLabel">Iniciando analise...</span>
+            <span class="typing__dots" aria-hidden="true">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </span>
+          </div>
+
+          <div style="background:var(--bg-1);border-radius:var(--radius-md);overflow:hidden;height:8px;width:100%;">
+            <div id="progressBar" style="height:100%;width:4%;background:linear-gradient(90deg,var(--brand),var(--accent));border-radius:var(--radius-md);transition:width 0.6s ease;"></div>
+          </div>
+          <div id="progressPct" style="margin-top:6px;font-size:12px;color:var(--text-muted);text-align:right;">0%</div>
+        </div>
+
+        <div id="resultBox" style="display:none;width:100%;max-width:560px;text-align:center;">
+          <p style="font-size:18px;font-weight:600;color:var(--brand);">&#10003; Analise concluida!</p>
+          <p style="color:var(--text-muted);font-size:14px;">Redirecionando para o resultado...</p>
+        </div>
+
+        <div id="errorBox" style="display:none;width:100%;max-width:560px;">
+          <div class="bubble bubble--bot" style="background:#fff0f0;border-color:#e9a0a0;">
+            <strong>Erro ao processar a analise</strong>
+            <p id="errorMsg" style="margin:6px 0 0;font-size:14px;"></p>
+            <a href="/" style="font-size:13px;color:var(--brand);">Voltar e tentar novamente</a>
+          </div>
+        </div>
+
+      </main>
+
+      <footer class="chat__footer">
+        <div class="chat__status" id="statusBar"></div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="/analisar.js"></script>
+</body>
+</html>

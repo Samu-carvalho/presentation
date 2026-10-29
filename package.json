@@ -1,0 +1,26 @@
+{
+  "name": "omt-analise-aut",
+  "version": "1.0.0",
+  "description": "Assistente automatizado para analise de autorizacoes medicas e odontologicas",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --import @dotenvx/dotenvx/config server.js",
+    "dev": "node --watch --import @dotenvx/dotenvx/config server.js",
+    "test": "node scratch/test_diretrizes_dados.mjs && node scratch/test_runner_geral.mjs"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@azure/identity": "^4.13.1",
+    "@dotenvx/dotenvx": "^1.44.0",
+    "@xenova/transformers": "^2.17.2",
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
+    "httpntlm": "^1.8.13",
+    "marked": "^14.1.2",
+    "mssql": "^11.0.1",
+    "winston": "^3.13.0"
+  }
+}

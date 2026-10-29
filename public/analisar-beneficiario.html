@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OMINT - Analise de Beneficiario</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="chat">
+      <header class="chat__header">
+        <div class="brand">
+          <div class="brand__kicker">OMINT</div>
+          <h1 class="chat__title">Analise de Perfil do Beneficiario</h1>
+          <div class="chat__subtitle">Consumo, Cobertura e Deteccao de Fraudes</div>
+        </div>
+      </header>
+
+      <main class="chat__messages">
+        <form id="analysisForm" class="composer" autocomplete="off" style="flex-direction:column;align-items:stretch;gap:14px;">
+          <label>
+            <div style="font-weight:600;margin-bottom:6px;">ID do Beneficiario</div>
+            <input id="idBeneficiario" class="composer__input" type="number" placeholder="Ex.: 12345" required />
+          </label>
+
+          <label>
+            <div style="font-weight:600;margin-bottom:6px;">Prompt</div>
+            <input id="prompt" class="composer__input" type="text" placeholder="Ex.: analise-geral" value="analise-geral" required />
+          </label>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" type="submit">Analisar Beneficiario</button>
+            <a class="btn btn--ghost" href="/logs" style="text-decoration:none;display:inline-flex;align-items:center;">Ver logs</a>
+            <a class="btn btn--ghost" href="/analisar" style="text-decoration:none;display:inline-flex;align-items:center;">Analisar Autorizacao</a>
+          </div>
+        </form>
+
+        <section id="output" style="margin-top:16px;"></section>
+      </main>
+
+      <footer class="chat__footer">
+        <div class="chat__status" id="status"></div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("analysisForm");
+    const output = document.getElementById("output");
+    const status = document.getElementById("status");
+    const idInput = document.getElementById("idBeneficiario");
+    const promptInput = document.getElementById("prompt");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      output.innerHTML = "";
+      status.textContent = "Processando...";
+
+      const idBeneficiario = Number(idInput.value);
+      const prompt = promptInput.value.trim();
+
+      if (!Number.isInteger(idBeneficiario) || idBeneficiario <= 0) {
+        status.textContent = "ID do beneficiario invalido";
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/analisar-beneficiario", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idBeneficiario, prompt })
+        });
+
+        const data = await response.json();
+
+        if (!data.ok) {
+          status.textContent = `Erro: ${data.error || "Falha desconhecida"}`;
+          output.innerHTML = `<div style="color:red;padding:10px;background:#ffe6e6;border-radius:4px;">${data.error}</div>`;
+          return;
+        }
+
+        status.textContent = `Analise concluida em ${data.steps} etapas`;
+        output.innerHTML = `<div style="padding:10px;background:#e6f3ff;border-radius:4px;margin-bottom:10px;">
+          <strong>Beneficiario:</strong> ID ${data.idBeneficiario}<br/>
+          <strong>Resultado:</strong> <a href="${data.viewUrl}" target="_blank">${data.viewUrl}</a><br/>
+          <strong>Prompt:</strong> ${data.prompt}<br/>
+          <strong>Etapas:</strong> ${data.steps}
+        </div>`;
+
+        // Auto-redirecionar para resultado após 1s
+        setTimeout(() => {
+          window.location.href = data.viewUrl;
+        }, 1000);
+      } catch (err) {
+        status.textContent = "Erro de rede ou servidor";
+        output.innerHTML = `<div style="color:red;padding:10px;background:#ffe6e6;border-radius:4px;">${err.message}</div>`;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+2026-10-20 13:49:28 [Server] [Aplicacao iniciada] [{"url":"http://localhost:3000"}]
+2026-10-20 13:49:42 [HTTP] [Request] [{"method":"GET","url":"/apresentacao-comercial","body":{}}]
+2026-10-20 13:49:42 [HTTP] [Request] [{"method":"GET","url":"/favicon.ico","body":{}}]
+2026-10-20 13:49:56 [HTTP] [Request] [{"method":"GET","url":"/api/apresentacao/dados?cdEmpresa=10588&dataInicial=2025-09-01&dataFinal=2026-08-31","body":{}}]
+2026-10-20 13:51:47 [HTTP] [Request] [{"method":"GET","url":"/img/omint-saude-e-seguros-negativo.svg","body":{}}]
+2026-10-20 13:51:50 [HTTP] [Request] [{"method":"POST","url":"/api/apresentacao/highlights/gerar","body":{"_resumo":"28789 bytes","_chaves":["contexto","slides"]}}]
+2026-10-20 13:52:35 [HTTP] [Request] [{"method":"GET","url":"/img/omint-saude-e-seguros-negativo.svg","body":{}}]
+2026-10-20 15:52:05 [Server] [Encerrando] [{"sinal":"SIGINT"}]
