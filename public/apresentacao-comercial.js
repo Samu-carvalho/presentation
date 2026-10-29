@@ -116,6 +116,36 @@ function num(v) {
 const brl = (n, dec = 2) =>
   n.toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
 
+const PREPOSICOES_NOME = new Set(['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'por', 'para', 'com', 'no', 'na', 'nos', 'nas', 'ao', 'aos']);
+const SIGLAS_PRESERVADAS = new Set([
+  'sa', 's/a', 's.a', 's.a.', 'ltda', 'me', 'epp', 'eireli', 'cdb', 'dasa', 'hcor', 'ps', 'uti',
+  'aacd', 'igesp', 'incor', 'icesp', 'fleury', 'delboni', 'lavoisier', 'salomao', 'sp', 'rj', 'mg',
+  'df', 'pr', 'rs', 'ba', 'pe', 'ce', 'go', 'sc', 'es', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'
+]);
+
+function formatarNomeProprio(str) {
+  if (!str) return '';
+  const limpo = String(str).trim();
+  if (!limpo || /^[*—-]+$/.test(limpo)) return limpo;
+
+  return limpo
+    .toLowerCase()
+    .split(/\s+/)
+    .map((palavra, idx) => {
+      const semPont = palavra.replace(/[.,;()\[\]"']/g, '');
+      if (SIGLAS_PRESERVADAS.has(semPont) || SIGLAS_PRESERVADAS.has(palavra)) {
+        return palavra.toUpperCase();
+      }
+      if (idx > 0 && PREPOSICOES_NOME.has(palavra)) {
+        return palavra;
+      }
+      return palavra.replace(/(^|[-'’/(["])(\p{Ll})/gu, (match, sep, letra) => {
+        return sep + letra.toUpperCase();
+      });
+    })
+    .join(' ');
+}
+
 const FORMATOS = {
   texto: (v) => {
     if (v === null || v === undefined || v === '') return '—';
@@ -124,6 +154,8 @@ const FORMATOS = {
     if (s.toUpperCase() === 'TITULAR') return 'Titular';
     return formatarRotulo(s);
   },
+  nome: (v) => (v === null || v === undefined || v === '' ? '—' : formatarNomeProprio(v)),
+  prestador: (v) => (v === null || v === undefined || v === '' ? '—' : formatarNomeProprio(v)),
   ranking: (v) => {
     const n = num(v);
     if (n === null) return (v === null || v === undefined || v === '') ? '—' : String(v).trim();
@@ -219,11 +251,27 @@ const formatarRotulo = (s) => {
     .replace(/Impacto\s*copay\s*no\s*custo/gi, 'Impacto de coparticipação')
     .replace(/Impacto\s*copay/gi, 'Impacto de coparticipação')
     .replace(/\bcopay\b/gi, 'coparticipação')
-    .replace(/\bCopay\b/g, 'Coparticipação')
-    .replace(/\bCusto\s*PMPM\b/gi, 'Custo por vida (mês)')
-    .replace(/\bPMPM\b/g, 'Custo por vida (mês)')
-    .replace(/^Total\s*\((?:Sexo|Gênero|Genero)\)$/i, 'Total (Por gênero)')
-    .replace(/\bTotal\s*\(Sexo\)/gi, 'Total (Por gênero)');
+    .replace(/\bCusto\s*PMPM\b/gi, 'Despesa por vida (mês)')
+    .replace(/\bPMPM\b/g, 'Despesa por vida (mês)')
+    .replace(/\bCusto\s*m[eé]dio\b/gi, 'Despesa média')
+    .replace(/\bCusto\s*total\b/gi, 'Despesa total')
+    .replace(/\bCusto\s*por\s*vida\b/gi, 'Despesa por vida')
+    .replace(/\bCusto\s*acumulado\b/gi, 'Despesa acumulada')
+    .replace(/\bCusto\s*estimado\b/gi, 'Despesa estimada')
+    .replace(/\bCusto\s*unit[aá]rio\b/gi, 'Despesa unitária')
+    .replace(/\bCusto\s*l[ií]quido\b/gi, 'Despesa líquida')
+    .replace(/\bCusto\s*anterior\b/gi, 'Despesa anterior')
+    .replace(/\bCusto\s*assistencial\b/gi, 'Despesa assistencial')
+    .replace(/\bCusto\s*bruto\b/gi, 'Despesa bruta')
+    .replace(/\bDo\s*custo\b/gi, 'Da despesa')
+    .replace(/\bNo\s*custo\b/gi, 'Na despesa')
+    .replace(/\bAo\s*custo\b/gi, 'À despesa')
+    .replace(/\bCusto\b/g, 'Despesa')
+    .replace(/\bcusto\b/g, 'despesa')
+    .replace(/Δ\s*/g, 'Variação ')
+    .replace(/Δ/g, 'Variação ')
+    .replace(/^Total\s*\((?:Sexo|Gênero|Genero)\)$/i, 'Total por gênero')
+    .replace(/\bTotal\s*\(Sexo\)/gi, 'Total por gênero');
 };
 
 /** estado visual a partir de um alerta { acima | abaixo | atencao | invertido } */
@@ -1102,9 +1150,9 @@ function resolverFonteTabela(fonte) {
   const isIndicadores = fonte.assinatura === 'indicadores' || idsDaFonte(fonte).includes(5);
   if (isIndicadores && itens.length) {
     const MAPA_IND = {
-      'consultas pmpm': 'Consultas',
-      'consulta por associado': 'Consultas',
-      'consultas': 'Consultas',
+      'consultas pmpm': 'Consultas por vida/mês',
+      'consulta por associado': 'Consultas por vida/mês',
+      'consultas': 'Consultas por vida/mês',
       'exames/consultas': 'Exames por consulta',
       'exames por consultas': 'Exames por consulta',
       'exames por consulta': 'Exames por consulta',
@@ -1116,29 +1164,29 @@ function resolverFonteTabela(fonte) {
       'relação exames/consultas': 'Exames por consulta',
       'razao exames por consulta': 'Exames por consulta',
       'razão exames por consulta': 'Exames por consulta',
-      'exames pmpm': 'Exames',
-      'exame por associado': 'Exames',
-      'exames por associado': 'Exames',
-      'exames': 'Exames',
+      'exames pmpm': 'Exames por vida/mês',
+      'exame por associado': 'Exames por vida/mês',
+      'exames por associado': 'Exames por vida/mês',
+      'exames': 'Exames por vida/mês',
       'indice de uti': 'Índice de UTI',
       'índice de uti': 'Índice de UTI',
       'uti associado': 'Índice de UTI',
-      'atendimento de urgencia': 'Pronto-Socorro',
-      'atendimento de urgência': 'Pronto-Socorro',
-      'atendimento de urgencia por associado': 'Pronto-Socorro',
-      'atendimento de urgência por associado': 'Pronto-Socorro',
-      'pronto socorro': 'Pronto-Socorro',
-      'pronto-socorro': 'Pronto-Socorro',
-      'pronto socorro pmpm': 'Pronto-Socorro',
-      'pronto-socorro pmpm': 'Pronto-Socorro',
-      'pronto atendimento': 'Pronto-Socorro',
-      'pronto-atendimento': 'Pronto-Socorro',
-      'pronto atendimento pmpm': 'Pronto-Socorro',
-      'pronto atendimento por associado': 'Pronto-Socorro',
-      'terapias': 'Terapias seriadas',
-      'terapias pmpm': 'Terapias seriadas',
-      'terapias seriadas': 'Terapias seriadas',
-      'terapias seriadas / associado': 'Terapias seriadas',
+      'atendimento de urgencia': 'Pronto-Socorro por vida/mês',
+      'atendimento de urgência': 'Pronto-Socorro por vida/mês',
+      'atendimento de urgencia por associado': 'Pronto-Socorro por vida/mês',
+      'atendimento de urgência por associado': 'Pronto-Socorro por vida/mês',
+      'pronto socorro': 'Pronto-Socorro por vida/mês',
+      'pronto-socorro': 'Pronto-Socorro por vida/mês',
+      'pronto socorro pmpm': 'Pronto-Socorro por vida/mês',
+      'pronto-socorro pmpm': 'Pronto-Socorro por vida/mês',
+      'pronto atendimento': 'Pronto-Socorro por vida/mês',
+      'pronto-atendimento': 'Pronto-Socorro por vida/mês',
+      'pronto atendimento pmpm': 'Pronto-Socorro por vida/mês',
+      'pronto atendimento por associado': 'Pronto-Socorro por vida/mês',
+      'terapias': 'Terapias por vida/mês',
+      'terapias pmpm': 'Terapias por vida/mês',
+      'terapias seriadas': 'Terapias por vida/mês',
+      'terapias seriadas / associado': 'Terapias por vida/mês',
       'int 1000 vidas/mes': 'Internações por 1.000 vidas/mês',
       'int 1000 vidas/mês': 'Internações por 1.000 vidas/mês',
       'int. 1000 vidas/mes': 'Internações por 1.000 vidas/mês',
@@ -1315,12 +1363,35 @@ function resolverFonteTabela(fonte) {
       }
     }
 
-    // Cruzamento com Relatório 14 (Evolução Mensal Despesa Por Evento) para obter Ano 1, Ano 2 e Variação
+    // Cruzamento com Relatório 14 (Evolução Mensal Despesa Por Evento) para obter Custo Anterior e Variação
     const idsR14 = idsDaFonte({ assinatura: 'eventoMensal' });
     const itensR14 = (idsR14.length ? idsR14.flatMap(itensDoRelatorio) : itensDoRelatorio(14)) || [];
     // Cruzamento com Relatório 5 (Indicadores de Utilização) para obter Quantidade e Variações
     const idsR5 = idsDaFonte({ assinatura: 'indicadores' });
     const itensR5 = (idsR5.length ? idsR5.flatMap(itensDoRelatorio) : itensDoRelatorio(5)) || [];
+
+    // Detecta dinamicamente a quantidade de meses do período atual (ex: 12 meses)
+    const colMeses14 = [...new Set(itensR14.map((d) => d.Coluna).filter((c) => chavePeriodo(c) !== null))];
+    let qtdMesesPeriodo = colMeses14.length;
+    if (!qtdMesesPeriodo || qtdMesesPeriodo <= 0) {
+      try {
+        const dadosSin = typeof extrairDadosSinistralidadePeriodos === 'function' ? extrairDadosSinistralidadePeriodos() : null;
+        const mesesAtu = dadosSin?.periodosFormatados?.[1]?.meses?.filter(Boolean) || [];
+        if (mesesAtu.length > 0) qtdMesesPeriodo = mesesAtu.length;
+      } catch (_) {}
+    }
+    if (!qtdMesesPeriodo || qtdMesesPeriodo <= 0) {
+      qtdMesesPeriodo = 12;
+    }
+
+    const ehColMediaAnt = (c) => {
+      const norm = normTexto(c);
+      return norm === 'media anterior' || norm === 'ano 1' || norm === 'anterior';
+    };
+    const ehColMediaAtu = (c) => {
+      const norm = normTexto(c);
+      return norm === 'media' || norm === 'ano 2' || norm === 'atual';
+    };
 
     const itensHospDef = ESTRUTURA_SECOES_EVENTO[0].itens;
     const itensAmbDef = ESTRUTURA_SECOES_EVENTO[1].itens;
@@ -1370,23 +1441,27 @@ function resolverFonteTabela(fonte) {
         it,
         nome: it.nome,
         qtd,
-        varQtdPct,
         vTot,
         pCart,
         pBench,
         vAnt,
         vAtu,
+        vAntAcumulado,
       };
     };
 
-    const formatarLinha = (nome, vTot, pCart, pBench, vAnt, vAtu, qtd, varQtdPct, opts = {}) => {
+    const formatarLinha = (nome, vTot, pCart, pBench, vAnt, vAtu, qtd, varQtdParam = null, opts = {}, vAntAcumuladoParam = null, qtdAnt = null) => {
+      const vAntAcumulado = vAntAcumuladoParam !== null ? vAntAcumuladoParam : (vAnt !== null ? vAnt * qtdMesesPeriodo : null);
       let varStr = '—';
       let varPct = null;
-      if (vAnt !== null && vAtu !== null && vAnt > 0) {
+      if (vAntAcumulado !== null && vTot !== null && vAntAcumulado > 0) {
+        varPct = ((vTot - vAntAcumulado) / vAntAcumulado) * 100;
+        varStr = (varPct > 0 ? '+' : '') + brl(varPct, 1) + '%';
+      } else if (vAnt !== null && vAtu !== null && vAnt > 0) {
         varPct = ((vAtu - vAnt) / vAnt) * 100;
         varStr = (varPct > 0 ? '+' : '') + brl(varPct, 1) + '%';
-      } else if (vAnt !== null && vAtu !== null) {
-        if (vAtu > 0 && vAnt === 0) {
+      } else if (vAntAcumulado !== null && vTot !== null) {
+        if (vTot > 0 && vAntAcumulado === 0) {
           varPct = 100;
           varStr = '+100,0%';
         } else {
@@ -1405,6 +1480,14 @@ function resolverFonteTabela(fonte) {
         difStr = (dif > 0 ? '+' : '') + brl(dif, 1) + ' p.p.';
       }
 
+      const custoMedio = (vAtu !== null && vAtu >= 0) ? Math.round(vAtu) : null;
+      const custoMedioAnt = (vAnt !== null && vAnt >= 0) ? Math.round(vAnt) : null;
+
+      let varQtdCalc = null;
+      if (qtd !== null && qtdAnt !== null && qtdAnt > 0) {
+        varQtdCalc = ((qtd - qtdAnt) / qtdAnt) * 100;
+      }
+
       return {
         __eixo: nome,
         __classeLinha: opts.classeLinha || '',
@@ -1412,23 +1495,46 @@ function resolverFonteTabela(fonte) {
         __isSecao: !!opts.isSecao,
         Quantidade: qtd,
         Qtd: qtd,
+        QtdAnt: qtdAnt,
+        QuantidadeAnt: qtdAnt,
+        QuantidadeAnoAnterior: qtdAnt,
+        'Despesa (R$)': vTot,
+        Despesa: vTot,
         'Custo (R$)': vTot,
         Custo: vTot,
         Total: vTot,
         Valor: vTot,
+        DespesaAnt: vAntAcumulado,
+        CustoAnt: vAntAcumulado,
+        'Ano 1': vAntAcumulado,
+        Anterior: vAntAcumulado,
+        AnoAnterior: vAntAcumulado,
+        CustoAnoAnterior: vAntAcumulado,
+        PercTotalAnt: null,
+        PercTotalAnoAnterior: null,
+        DespesaMediaAnt: custoMedioAnt,
+        CustoMedioAnt: custoMedioAnt,
+        TicketMedioAnt: custoMedioAnt,
+        'Despesa média (R$)': custoMedio,
+        DespesaMedia: custoMedio,
+        CustoMedio: custoMedio,
+        TicketMedio: custoMedio,
+        _vAnt: vAntAcumulado,
+        _vAtu: vTot,
+        'Ano 2': vAtu,
         '% Empresa': pCart !== null ? brl(pCart, 2) + '%' : '—',
+        '% da despesa total': pCart !== null ? brl(pCart, 2) + '%' : '—',
         'Custo Total %': pCart !== null ? brl(pCart, 2) + '%' : '—',
         '% Despesa': pCart !== null ? brl(pCart, 2) + '%' : '—',
         Perc_Despesa: pCart,
         'Benchmark*': pBench !== null ? brl(pBench, 2) + '%' : '—',
         '% Despesa Bench': pBench !== null ? brl(pBench, 2) + '%' : '—',
         Perc_Despesa_Bench: pBench,
-        VarQtd: varQtdPct,
-        VarQtdPct: varQtdPct,
+        VarQtd: varQtdCalc,
+        VarQtdPct: varQtdCalc,
+        VarDespesa: varPct,
         VarCusto: varPct,
         VarCustoPct: varPct,
-        'Ano 1': vAnt,
-        'Ano 2': vAtu,
         Variação: varStr,
         Variacao: varStr,
         Variao: varStr,
@@ -1442,20 +1548,22 @@ function resolverFonteTabela(fonte) {
 
     // 1. SEÇÃO HOSPITALAR (vem antes de ambulatorial conforme solicitado)
     const hospProcessados = itensHospDef.map(resolverDadosItem);
-    const rowTotHosp15 = res.linhas.find((l) => normTexto(l.__eixo).includes('total hospitalar'));
+    const rowTotHosp15 = res.linhas.find((l) => ESTRUTURA_SECOES_EVENTO[0].matchTotal(normTexto(l.__eixo)));
     const totHospVTot = rowTotHosp15 ? num(rowTotHosp15.Total) : hospProcessados.reduce((acc, d) => acc + (d.vTot || 0), 0);
     const totHospPCart = rowTotHosp15 ? num(rowTotHosp15['% Despesa'] ?? rowTotHosp15['Perc_Despesa']) : hospProcessados.reduce((acc, d) => acc + (d.pCart || 0), 0);
     const totHospPBench = rowTotHosp15 ? num(rowTotHosp15['% Despesa Bench'] ?? rowTotHosp15['Perc_Despesa_Bench']) : hospProcessados.reduce((acc, d) => acc + (d.pBench || 0), 0);
 
-    const itemAntTotHosp = itensR14.find((d) => normTexto(d.Linha).includes('total hospitalar') && (d.Coluna === 'Media Anterior' || d.Coluna === 'Média Anterior'));
-    const itemAtuTotHosp = itensR14.find((d) => normTexto(d.Linha).includes('total hospitalar') && (d.Coluna === 'Media' || d.Coluna === 'Média'));
-    const totHospVAnt = itemAntTotHosp ? num(itemAntTotHosp.Valor) : hospProcessados.reduce((acc, d) => acc + (d.vAnt || 0), 0);
-    const totHospVAtu = itemAtuTotHosp ? num(itemAtuTotHosp.Valor) : hospProcessados.reduce((acc, d) => acc + (d.vAtu || 0), 0);
+    const itemAntTotHosp = itensR14.find((d) => ESTRUTURA_SECOES_EVENTO[0].matchTotal(normTexto(d.Linha)) && ehColMediaAnt(d.Coluna));
+    const itemAtuTotHosp = itensR14.find((d) => ESTRUTURA_SECOES_EVENTO[0].matchTotal(normTexto(d.Linha)) && ehColMediaAtu(d.Coluna));
+    const temAntHosp = itemAntTotHosp ? num(itemAntTotHosp.Valor) !== null : hospProcessados.some((d) => d.vAnt !== null);
+    const temAtuHosp = itemAtuTotHosp ? num(itemAtuTotHosp.Valor) !== null : hospProcessados.some((d) => d.vAtu !== null);
+    const totHospVAnt = itemAntTotHosp ? num(itemAntTotHosp.Valor) : (temAntHosp ? hospProcessados.reduce((acc, d) => acc + (d.vAnt || 0), 0) : null);
+    const totHospVAtu = itemAtuTotHosp ? num(itemAtuTotHosp.Valor) : (temAtuHosp ? hospProcessados.reduce((acc, d) => acc + (d.vAtu || 0), 0) : null);
+    const totHospVAntAcumulado = totHospVAnt !== null ? totHospVAnt * qtdMesesPeriodo : (temAntHosp ? hospProcessados.reduce((acc, d) => acc + (d.vAntAcumulado || 0), 0) : null);
 
-    const qInt = itensR5.find((d) => normTexto(d.Linha).includes('int 1000') && igual(d.Coluna, 'Quantidade'));
-    const difInt = itensR5.find((d) => normTexto(d.Linha).includes('int 1000') && igual(d.Coluna, 'Dif'));
-    const totHospQtd = qInt ? num(qInt.Valor) : hospProcessados.reduce((acc, d) => acc + (d.qtd || 0), 0);
-    const totHospVarQtdPct = difInt ? num(difInt.Valor) : null;
+    const qInt = itensR5.find((d) => (normTexto(d.Linha).includes('int 1000') || normTexto(d.Linha).includes('internacoes') || normTexto(d.Linha).includes('internações')) && igual(d.Coluna, 'Quantidade'));
+    const rawHospQtd = qInt ? num(qInt.Valor) : hospProcessados.reduce((acc, d) => acc + (d.qtd || 0), 0);
+    const totHospQtd = rawHospQtd > 0 ? rawHospQtd : null;
 
     linhasEstruturadas.push(formatarLinha(
       'Total Despesas Hospitalares',
@@ -1465,8 +1573,9 @@ function resolverFonteTabela(fonte) {
       totHospVAnt,
       totHospVAtu,
       totHospQtd,
-      totHospVarQtdPct,
-      { isSecao: true, isDestaque: true, classeLinha: 'linha-secao-evento linha-total-hospitalar' }
+      null,
+      { isSecao: true, isDestaque: true, classeLinha: 'linha-secao-evento linha-total-hospitalar' },
+      totHospVAntAcumulado
     ));
 
     hospProcessados.forEach((d) => {
@@ -1478,24 +1587,27 @@ function resolverFonteTabela(fonte) {
         d.vAnt,
         d.vAtu,
         d.qtd,
-        d.varQtdPct,
-        { classeLinha: 'linha-hospitalar' }
+        null,
+        { classeLinha: 'linha-hospitalar' },
+        d.vAntAcumulado
       ));
     });
 
     // 2. SEÇÃO AMBULATORIAL (vem após hospitalar)
     const ambProcessados = itensAmbDef.map(resolverDadosItem);
-    const totAmbVTot = ambProcessados.reduce((acc, d) => acc + (d.vTot || 0), 0);
-    const totAmbPCart = ambProcessados.reduce((acc, d) => acc + (d.pCart || 0), 0);
-    const totAmbPBench = ambProcessados.reduce((acc, d) => acc + (d.pBench || 0), 0);
-    const totAmbVAnt = ambProcessados.reduce((acc, d) => acc + (d.vAnt || 0), 0);
-    const totAmbVAtu = ambProcessados.reduce((acc, d) => acc + (d.vAtu || 0), 0);
-    const totAmbQtd = ambProcessados.filter((d) => d.qtd !== null).reduce((acc, d) => acc + (d.qtd || 0), 0);
+    const rowTotAmb15 = res.linhas.find((l) => ESTRUTURA_SECOES_EVENTO[1].matchTotal(normTexto(l.__eixo)));
+    const totAmbVTot = rowTotAmb15 ? num(rowTotAmb15.Total) : ambProcessados.reduce((acc, d) => acc + (d.vTot || 0), 0);
+    const totAmbPCart = rowTotAmb15 ? num(rowTotAmb15['% Despesa'] ?? rowTotAmb15['Perc_Despesa']) : ambProcessados.reduce((acc, d) => acc + (d.pCart || 0), 0);
+    const totAmbPBench = rowTotAmb15 ? num(rowTotAmb15['% Despesa Bench'] ?? rowTotAmb15['Perc_Despesa_Bench']) : ambProcessados.reduce((acc, d) => acc + (d.pBench || 0), 0);
 
-    const ambComQtdEVar = ambProcessados.filter((d) => d.qtd !== null && d.qtd > 0 && d.varQtdPct !== null);
-    const totAmbVarQtdPct = ambComQtdEVar.length
-      ? Number((ambComQtdEVar.reduce((acc, d) => acc + d.qtd * d.varQtdPct, 0) / ambComQtdEVar.reduce((acc, d) => acc + d.qtd, 0)).toFixed(1))
-      : null;
+    const itemAntTotAmb = itensR14.find((d) => ESTRUTURA_SECOES_EVENTO[1].matchTotal(normTexto(d.Linha)) && ehColMediaAnt(d.Coluna));
+    const itemAtuTotAmb = itensR14.find((d) => ESTRUTURA_SECOES_EVENTO[1].matchTotal(normTexto(d.Linha)) && ehColMediaAtu(d.Coluna));
+    const temAntAmb = itemAntTotAmb ? num(itemAntTotAmb.Valor) !== null : ambProcessados.some((d) => d.vAnt !== null);
+    const temAtuAmb = itemAtuTotAmb ? num(itemAtuTotAmb.Valor) !== null : ambProcessados.some((d) => d.vAtu !== null);
+    const totAmbVAnt = itemAntTotAmb ? num(itemAntTotAmb.Valor) : (temAntAmb ? ambProcessados.reduce((acc, d) => acc + (d.vAnt || 0), 0) : null);
+    const totAmbVAtu = itemAtuTotAmb ? num(itemAtuTotAmb.Valor) : (temAtuAmb ? ambProcessados.reduce((acc, d) => acc + (d.vAtu || 0), 0) : null);
+    const totAmbVAntAcumulado = temAntAmb ? (totAmbVAnt !== null ? totAmbVAnt * qtdMesesPeriodo : ambProcessados.reduce((acc, d) => acc + (d.vAntAcumulado || 0), 0)) : null;
+    const totAmbQtd = ambProcessados.filter((d) => d.qtd !== null).reduce((acc, d) => acc + (d.qtd || 0), 0);
 
     linhasEstruturadas.push(formatarLinha(
       'Total Despesas Ambulatoriais',
@@ -1505,8 +1617,9 @@ function resolverFonteTabela(fonte) {
       totAmbVAnt,
       totAmbVAtu,
       totAmbQtd > 0 ? totAmbQtd : null,
-      totAmbVarQtdPct,
-      { isSecao: true, isDestaque: true, classeLinha: 'linha-secao-evento linha-total-ambulatorial' }
+      null,
+      { isSecao: true, isDestaque: true, classeLinha: 'linha-secao-evento linha-total-ambulatorial' },
+      totAmbVAntAcumulado
     ));
 
     ambProcessados.forEach((d) => {
@@ -1518,8 +1631,9 @@ function resolverFonteTabela(fonte) {
         d.vAnt,
         d.vAtu,
         d.qtd,
-        d.varQtdPct,
-        { classeLinha: 'linha-ambulatorial' }
+        null,
+        { classeLinha: 'linha-ambulatorial' },
+        d.vAntAcumulado
       ));
     });
 
@@ -1533,40 +1647,69 @@ function resolverFonteTabela(fonte) {
       odoProcessado.vAnt,
       odoProcessado.vAtu,
       odoProcessado.qtd,
-      odoProcessado.varQtdPct,
-      { classeLinha: 'linha-odontologia' }
+      null,
+      { classeLinha: 'linha-odontologia' },
+      odoProcessado.vAntAcumulado
     ));
 
     // 4. TOTAL GERAL (abaixo de Despesas odontológicas englobando tudo)
-    const totGeralVTot = (totHospVTot || 0) + (totAmbVTot || 0) + (odoProcessado.vTot || 0);
-    const totGeralPCart = (totHospPCart || 0) + (totAmbPCart || 0) + (odoProcessado.pCart || 0);
-    const totGeralPBench = (totHospPBench || 0) + (totAmbPBench || 0) + (odoProcessado.pBench || 0);
-    const totGeralVAnt = (totHospVAnt || 0) + (totAmbVAnt || 0) + (odoProcessado.vAnt || 0);
-    const totGeralVAtu = (totHospVAtu || 0) + (totAmbVAtu || 0) + (odoProcessado.vAtu || 0);
-    const totGeralQtd = (totHospQtd || 0) + (totAmbQtd || 0) + (odoProcessado.qtd || 0);
+    const rowTotGeral15 = res.linhas.find((l) => ITEM_TOTAL_GERAL_EVENTO.match(normTexto(l.__eixo)));
+    const totGeralVTot = rowTotGeral15 ? num(rowTotGeral15.Total) : ((totHospVTot || 0) + (totAmbVTot || 0) + (odoProcessado.vTot || 0));
+    const totGeralPCart = rowTotGeral15 ? num(rowTotGeral15['% Despesa'] ?? rowTotGeral15['Perc_Despesa']) : ((totHospPCart || 0) + (totAmbPCart || 0) + (odoProcessado.pCart || 0));
+    const totGeralPBench = rowTotGeral15 ? num(rowTotGeral15['% Despesa Bench'] ?? rowTotGeral15['Perc_Despesa_Bench']) : ((totHospPBench || 0) + (totAmbPBench || 0) + (odoProcessado.pBench || 0));
 
-    const itensGeralComQtdEVar = [
-      { qtd: totHospQtd, varQtdPct: totHospVarQtdPct },
-      { qtd: totAmbQtd, varQtdPct: totAmbVarQtdPct },
-    ].filter((d) => d.qtd !== null && d.qtd > 0 && d.varQtdPct !== null);
+    const itemAntTotGeral = itensR14.find((d) => ITEM_TOTAL_GERAL_EVENTO.match(normTexto(d.Linha)) && ehColMediaAnt(d.Coluna));
+    const itemAtuTotGeral = itensR14.find((d) => ITEM_TOTAL_GERAL_EVENTO.match(normTexto(d.Linha)) && ehColMediaAtu(d.Coluna));
+    const temAntGeral = itemAntTotGeral ? num(itemAntTotGeral.Valor) !== null : ((totHospVAntAcumulado !== null) || (totAmbVAntAcumulado !== null) || (odoProcessado.vAntAcumulado !== null));
+    const temAtuGeral = itemAtuTotGeral ? num(itemAtuTotGeral.Valor) !== null : ((totHospVAtu !== null) || (totAmbVAtu !== null) || (odoProcessado.vAtu !== null));
 
-    const totGeralVarQtdPct = itensGeralComQtdEVar.length
-      ? Number((itensGeralComQtdEVar.reduce((acc, d) => acc + d.qtd * d.varQtdPct, 0) / itensGeralComQtdEVar.reduce((acc, d) => acc + d.qtd, 0)).toFixed(1))
-      : null;
+    const totGeralVAnt = itemAntTotGeral ? num(itemAntTotGeral.Valor) : (temAntGeral ? ((totHospVAnt || 0) + (totAmbVAnt || 0) + (odoProcessado.vAnt || 0)) : null);
+    const totGeralVAtu = itemAtuTotGeral ? num(itemAtuTotGeral.Valor) : (temAtuGeral ? ((totHospVAtu || 0) + (totAmbVAtu || 0) + (odoProcessado.vAtu || 0)) : null);
+    const totGeralVAntAcumulado = temAntGeral ? (totGeralVAnt !== null ? totGeralVAnt * qtdMesesPeriodo : ((totHospVAntAcumulado || 0) + (totAmbVAntAcumulado || 0) + (odoProcessado.vAntAcumulado || 0))) : null;
+
+    // Total Geral não deve somar internações hospitalares com procedimentos ambulatoriais
+    const totGeralQtd = null;
 
     linhasEstruturadas.push(formatarLinha(
       'Total Geral',
       totGeralVTot,
-      totGeralPCart > 0 ? totGeralPCart : 100,
+      (totGeralVTot > 0 || totGeralPCart > 0) ? 100 : null,
       totGeralPBench,
       totGeralVAnt,
       totGeralVAtu,
-      totGeralQtd > 0 ? totGeralQtd : null,
-      totGeralVarQtdPct,
-      { isDestaque: true, classeLinha: 'linha-total' }
+      totGeralQtd,
+      null,
+      { isDestaque: true, classeLinha: 'linha-total' },
+      totGeralVAntAcumulado
     ));
 
-    ['Quantidade', 'Custo (R$)', 'Custo', 'Total', '% Empresa', 'Custo Total %', '% Despesa', 'Benchmark*', '% Despesa Bench', 'VarQtd', 'VarCusto', 'Ano 1', 'Ano 2', 'Variação', 'Diferença'].forEach((s) => {
+    // Cálculo proporcional de % da Despesa Total do Período Anterior para Slide 26
+    const cTotGeralAnt = num(totGeralVAntAcumulado);
+    if (cTotGeralAnt !== null && cTotGeralAnt > 0) {
+      linhasEstruturadas.forEach((row) => {
+        if (row.__eixo === 'Total Geral') {
+          row.PercTotalAnt = 100;
+          row.PercTotalAnoAnterior = 100;
+        } else {
+          const cRowAnt = num(row.DespesaAnt ?? row.CustoAnt ?? row['Ano 1'] ?? row.CustoAnoAnterior);
+          if (cRowAnt !== null && cRowAnt >= 0) {
+            const pct = Number(((cRowAnt / cTotGeralAnt) * 100).toFixed(2));
+            row.PercTotalAnt = pct;
+            row.PercTotalAnoAnterior = pct;
+          } else {
+            row.PercTotalAnt = null;
+            row.PercTotalAnoAnterior = null;
+          }
+        }
+      });
+    } else {
+      linhasEstruturadas.forEach((row) => {
+        row.PercTotalAnt = null;
+        row.PercTotalAnoAnterior = null;
+      });
+    }
+
+    ['Quantidade', 'Despesa (R$)', 'Despesa', 'Custo (R$)', 'Custo', 'Total', '% Empresa', '% da despesa total', 'Custo Total %', '% Despesa', 'Benchmark*', '% Despesa Bench', 'DespesaMedia', 'CustoMedio', 'DespesaMediaAnt', 'CustoMedioAnt', 'VarQtd', 'VarDespesa', 'VarCusto', 'Ano 1', 'Ano 2', 'Variação', 'Diferença', 'DespesaAnt', 'CustoAnt', 'Anterior', 'Ano Anterior', 'QtdAnt', 'QuantidadeAnt', 'QuantidadeAnoAnterior', 'PercTotalAnt', 'PercTotalAnoAnterior'].forEach((s) => {
       if (!res.series.includes(s)) res.series.push(s);
     });
 
