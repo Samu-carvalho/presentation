@@ -1,0 +1,2994 @@
+{
+  "meta": {
+    "marca": "OMINT",
+    "logo": "/img/omint-saude-e-seguros-negativo.svg",
+    "ocultarSlidesSemDados": true,
+    "incluirRelatoriosRestantes": false,
+    "incluirDiagnostico": false
+  },
+  "relatorios": {},
+  "assinaturas": {
+    "_comentario": "Cada assinatura é um filtro que identifica um relatório pelo conteúdo, sem depender do idRelatorio. Se um slide sair vazio, confira no slide Diagnóstico a coluna 'Amostra' e ajuste aqui.",
+    "mixLeRc": {
+      "linhaEm": [
+        "Consultas",
+        "Exames",
+        "Terapias Seriadas",
+        "Internação",
+        "Internacao",
+        "Total Geral"
+      ],
+      "colunaEm": [
+        "PercTotal",
+        "PercLE",
+        "PercRC"
+      ]
+    },
+    "faixaVidas": {
+      "linhaEm": [
+        "VidasFaixa"
+      ]
+    },
+    "produtoResumo": {
+      "linhaEm": [
+        "TÍTULOS",
+        "TITULOS",
+        "GRP FAM MÉDIO"
+      ],
+      "colunaEm": [
+        "TOTAL",
+        "Total",
+        "PREMIUM",
+        "Premium",
+        "CORPORATE",
+        "Corporate",
+        "SKILL",
+        "Skill"
+      ]
+    },
+    "planos": {
+      "linhaEm": [
+        "Titulos"
+      ],
+      "colunaForaDe": [
+        "PREMIUM",
+        "Premium",
+        "CORPORATE",
+        "Corporate",
+        "SKILL",
+        "Skill",
+        "TOTAL",
+        "Total",
+        "TotalGeral"
+      ]
+    },
+    "indicadores": {
+      "linhaEm": [
+        "Consultas PMPM",
+        "Consulta por associado"
+      ]
+    },
+    "sinistralidadeProdutoMensal": {
+      "linhaEm": [
+        "Premium",
+        "Corporate",
+        "Skill",
+        "Hospitalar",
+        "Total",
+        "Total Geral"
+      ],
+      "colunaEm": [
+        "TOTAL",
+        "Total"
+      ]
+    },
+    "vidasMensal": {
+      "grupoEm": [
+        "Medicina",
+        "M"
+      ],
+      "linhaEm": [
+        "Total",
+        "Premium",
+        "Corporate",
+        "Skill"
+      ]
+    },
+    "financeiroMensal": {
+      "linhaEm": [
+        "Coparticipacao",
+        "Coparticipação",
+        "Despesa (liquida de Copay)",
+        "Despesa (liquida de Coparticipacao)",
+        "Despesa (líquida de coparticipação)"
+      ]
+    },
+    "titularDependenteMensal": {
+      "grupoEm": [
+        "Medicina",
+        "M"
+      ],
+      "linhaEm": [
+        "Titular"
+      ]
+    },
+    "eventoMensal": {
+      "linhaEm": [
+        "Consultas",
+        "Exames",
+        "Terapias Seriadas",
+        "Total Geral"
+      ],
+      "colunaEm": [
+        "Media Anterior",
+        "Média Anterior",
+        "Media"
+      ]
+    },
+    "redeLivreEscolha": {
+      "linhaEm": [
+        "Rede Credenciada"
+      ]
+    },
+    "produtoMensal": {
+      "grupoEm": [
+        "Premium",
+        "Corporate",
+        "Skill",
+        "Hospitalar",
+        "Total",
+        "Total Geral"
+      ],
+      "linhaEm": [
+        "Receita",
+        "Despesa"
+      ]
+    },
+    "eventoBenchmark": {
+      "linhaEm": [
+        "Consultas",
+        "Exames",
+        "Terapias Seriadas",
+        "Internação",
+        "Internacao",
+        "Total Geral"
+      ],
+      "colunaEm": [
+        "% Despesa Bench",
+        "Perc_Despesa_Bench"
+      ]
+    },
+    "perfil": {
+      "linhaEm": [
+        "Custo PMPM"
+      ]
+    },
+    "checkup": {
+      "linhaEm": [
+        "Custo do CheckUp"
+      ]
+    },
+    "prestadores": {
+      "colunaEm": [
+        "% ac"
+      ]
+    },
+    "topDespesa": {
+      "colunaEm": [
+        "PercDespesaAC"
+      ]
+    },
+    "topFrequencia": {
+      "colunaEm": [
+        "FreqRC"
+      ]
+    },
+    "checkupPendentes": {
+      "colunaEm": [
+        "Realizou"
+      ]
+    },
+    "financeiroConsolidado": {
+      "grupoEm": [
+        "Medicina",
+        "M",
+        "Odontologia",
+        "O"
+      ],
+      "linhaEm": [
+        "RECEITA",
+        "Receita"
+      ],
+      "colunaEm": [
+        "TOTAL",
+        "Total"
+      ]
+    }
+  },
+  "blocos": [
+    {
+      "id": "capa",
+      "tipo": "capa",
+      "tituloTemplate": "{relatorio.EmpresaMae}",
+      "destaque": "Análise de Saúde",
+      "subtitulo": "Apresentação executiva: acompanhamento de vidas, despesas, sinistralidade e indicadores do plano.",
+      "pills": [
+        {
+          "template": "{_meta.dataInicial|data} a {_meta.dataFinal|data}",
+          "cor": "teal"
+        },
+        {
+          "template": "Agente: {relatorio.Agente}",
+          "cor": "blue"
+        },
+        {
+          "template": "Cliente desde {relatorio.Dt_Ingresso|data}",
+          "cor": "gold"
+        }
+      ]
+    },
+    {
+      "id": "ficha",
+      "tipo": "ficha",
+      "eyebrow": " ",
+      "titulo": "Ficha do contrato",
+      "campos": [
+        {
+          "rotulo": "Empresa",
+          "de": "relatorio.EmpresaMae"
+        },
+        {
+          "rotulo": "Corretora",
+          "de": "relatorio.Agente"
+        },
+        {
+          "rotulo": "Início do contrato",
+          "de": "relatorio.Dt_Ingresso",
+          "formato": "data"
+        },
+        {
+          "rotulo": "Período analisado",
+          "template": "{_meta.dataInicial|data} a {_meta.dataFinal|data}"
+        },
+        {
+          "rotulo": "Limite técnico",
+          "tipo": "limite-tecnico",
+          "formato": "percentualInteiro"
+        },
+        {
+          "rotulo": "Sinistralidade medicina",
+          "tipo": "sinistralidade-medicina",
+          "formato": "percentualInteiro"
+        },
+        {
+          "rotulo": "Sinistralidade odonto",
+          "tipo": "sinistralidade-odonto",
+          "formato": "percentualInteiro"
+        },
+        {
+          "rotulo": "Sinistralidade consolidada",
+          "tipo": "sinistralidade-consolidada",
+          "formato": "percentualInteiro"
+        },
+        {
+          "rotulo": "Mês de reajuste",
+          "tipo": "reajuste",
+          "template": "Médico: {relatorio.ReajusteMed} · Odonto: {relatorio.ReajusteOdo}",
+          "fallback": "-"
+        },
+        {
+          "rotulo": "Histórico de reajuste",
+          "tipo": "historico-reajuste",
+          "template": "Médico: 2024: 9,8% | 2025: 11,5% | 2026: 10,2% · Odonto: 2024: 6,0% | 2025: 7,2% | 2026: 8,0%",
+          "medicoHistorico": [
+            {
+              "periodo": "Ano anterior ao Ano 1",
+              "rotulo": "2024",
+              "ano": "2024",
+              "valor": "9,8%"
+            },
+            {
+              "periodo": "Ano 1",
+              "rotulo": "2025",
+              "ano": "2025",
+              "valor": "11,5%"
+            },
+            {
+              "periodo": "Ano 2",
+              "rotulo": "2026",
+              "ano": "2026",
+              "valor": "10,2%"
+            }
+          ],
+          "odontoHistorico": [
+            {
+              "periodo": "Ano anterior ao Ano 1",
+              "rotulo": "2024",
+              "ano": "2024",
+              "valor": "6,0%"
+            },
+            {
+              "periodo": "Ano 1",
+              "rotulo": "2025",
+              "ano": "2025",
+              "valor": "7,2%"
+            },
+            {
+              "periodo": "Ano 2",
+              "rotulo": "2026",
+              "ano": "2026",
+              "valor": "8,0%"
+            }
+          ]
+        }
+      ],
+      "_camposPreparados": {
+        "descricao": "Campos já suportados pelo renderFicha e prontos para ativação em futuros prompts ou customizações",
+        "campos": [
+          {
+            "rotulo": "Limite técnico",
+            "tipo": "limite-tecnico"
+          },
+          {
+            "rotulo": "Sinistralidade medicina",
+            "tipo": "sinistralidade-medicina"
+          },
+          {
+            "rotulo": "Sinistralidade odonto",
+            "tipo": "sinistralidade-odonto"
+          },
+          {
+            "rotulo": "Sinistralidade consolidada",
+            "tipo": "sinistralidade-consolidada"
+          },
+          {
+            "rotulo": "Histórico de reajustes últimos 5 anos, proposto X flexibilizado (RC analisar)",
+            "tipo": "rc-reajustes-5anos",
+            "sub": "Sob análise da equipe de RC"
+          },
+          {
+            "rotulo": "Benefícios adicionais",
+            "tipo": "rc-beneficios",
+            "sub": "Check up, Benefício farmácia, vacinas, seguro-viagem, Vida, etc"
+          },
+          {
+            "rotulo": "Modelo de Coparticipação (RC analisar)",
+            "tipo": "rc-copart",
+            "sub": "Regras de coparticipação contratual"
+          },
+          {
+            "rotulo": "Modelo de isenção de coparticipação (contrato) (RC analisar)",
+            "tipo": "rc-isencao",
+            "sub": "Isenções de coparticipação previstas em contrato"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sec-populacao",
+      "tipo": "secao",
+      "eyebrow": " ",
+      "titulo": "Perfil populacional"
+    },
+    {
+      "id": "kpi-vidas",
+      "tipo": "kpi",
+      "eyebrow": " ",
+      "titulo": "Evolução de vidas",
+      "itens": [
+        {
+          "id": "vidas",
+          "rotulo": "Vidas",
+          "formato": "inteiro",
+          "fonte": {
+            "assinatura": "vidasMensal",
+            "filtro": {
+              "ordem": 1,
+              "grupoEm": [
+                "Medicina",
+                "M"
+              ],
+              "linhaEm": [
+                "Total"
+              ]
+            },
+            "agregacao": "ultimo"
+          }
+        },
+        {
+          "id": "vidasPrimeiroMes",
+          "oculto": true,
+          "fonte": {
+            "assinatura": "vidasMensal",
+            "filtro": {
+              "ordem": 1,
+              "grupoEm": [
+                "Medicina",
+                "M"
+              ],
+              "linhaEm": [
+                "Total"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "difVidas",
+          "oculto": true,
+          "derivado": {
+            "de": [
+              "vidas",
+              "vidasPrimeiroMes"
+            ],
+            "operacao": "diferenca"
+          }
+        },
+        {
+          "id": "varVidas",
+          "rotulo": "Variação de vidas",
+          "formato": "percentualSinal",
+          "derivado": {
+            "de": [
+              "vidas",
+              "vidasPrimeiroMes"
+            ],
+            "operacao": "variacao"
+          },
+          "sub": "{difVidas|inteiroSinal} vidas vs 1º mês"
+        },
+        {
+          "id": "titulares",
+          "rotulo": "Titulares",
+          "formato": "inteiro",
+          "fonte": {
+            "assinatura": "titularDependenteMensal",
+            "filtro": {
+              "grupoEm": [
+                "Medicina",
+                "M"
+              ],
+              "linhaEm": [
+                "Titular"
+              ]
+            },
+            "agregacao": "ultimo"
+          }
+        },
+        {
+          "id": "dependentes",
+          "rotulo": "Dependentes",
+          "formato": "inteiro",
+          "fonte": {
+            "assinatura": "titularDependenteMensal",
+            "filtro": {
+              "grupoEm": [
+                "Medicina",
+                "M"
+              ],
+              "linhaEm": [
+                "Dependente"
+              ]
+            },
+            "agregacao": "ultimo"
+          }
+        },
+        {
+          "id": "grupoFamiliar",
+          "rotulo": "Vidas por titular",
+          "formato": "decimal",
+          "derivado": {
+            "de": [
+              "vidas",
+              "titulares"
+            ]
+          }
+        },
+        {
+          "id": "masculinoQtd",
+          "oculto": true,
+          "fonte": {
+            "assinatura": "faixaVidas",
+            "filtro": {
+              "linhaEm": [
+                "Masculino",
+                "MASCULINO"
+              ],
+              "colunaEm": [
+                "Total",
+                "TOTAL"
+              ]
+            }
+          }
+        },
+        {
+          "id": "femininoQtd",
+          "oculto": true,
+          "fonte": {
+            "assinatura": "faixaVidas",
+            "filtro": {
+              "linhaEm": [
+                "Feminino",
+                "FEMININO"
+              ],
+              "colunaEm": [
+                "Total",
+                "TOTAL"
+              ]
+            }
+          }
+        },
+        {
+          "id": "totalSexo",
+          "oculto": true,
+          "derivado": {
+            "de": [
+              "masculinoQtd",
+              "femininoQtd"
+            ],
+            "operacao": "soma"
+          }
+        },
+        {
+          "id": "pctMasculino",
+          "rotulo": "% Masculino",
+          "formato": "percentual",
+          "derivado": {
+            "de": [
+              "masculinoQtd",
+              "totalSexo"
+            ],
+            "operacao": "percentual"
+          },
+          "sub": "{masculinoQtd|inteiro} vidas"
+        },
+        {
+          "id": "pctFeminino",
+          "rotulo": "% Feminino",
+          "formato": "percentual",
+          "derivado": {
+            "de": [
+              "femininoQtd",
+              "totalSexo"
+            ],
+            "operacao": "percentual"
+          },
+          "sub": "{femininoQtd|inteiro} vidas"
+        }
+      ],
+      "subtituloGrafico": "Total"
+    },
+    {
+      "id": "vidas-mensal",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Evolução de vidas por mês e plano",
+      "fonte": {
+        "assinatura": "vidasMensal",
+        "filtro": {
+          "ordem": 1
+        },
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunasAuto": {
+        "rotuloEixo": "Evolução Mensal",
+        "formato": "inteiro",
+        "maximo": 14
+      },
+      "nota": "",
+      "compacta": true
+    },
+    {
+      "id": "graf-vidas-comparativo",
+      "ativo": false,
+      "tipo": "vidasComparativo",
+      "estilo": "coluna",
+      "eyebrow": " ",
+      "titulo": "Evolução de vidas: período atual × ano anterior",
+      "fonte": {
+        "assinatura": "vidasMensal",
+        "filtro": {
+          "ordem": 2
+        }
+      },
+      "formato": "inteiro"
+    },
+    {
+      "id": "titular-dependente",
+      "ativo": false,
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Titulares × dependentes por mês",
+      "fonte": {
+        "assinatura": "titularDependenteMensal",
+        "filtro": {
+          "grupoEm": [
+            "Medicina",
+            "M"
+          ]
+        },
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunasAuto": {
+        "rotuloEixo": "Vínculo",
+        "formato": "inteiro",
+        "maximo": 14
+      },
+      "compacta": true
+    },
+    {
+      "id": "perfil-populacional",
+      "tipo": "perfilPopulacional",
+      "eyebrow": " ",
+      "titulo": "Perfil demográfico",
+      "className": "slide-data"
+    },
+    {
+      "id": "faixa-vidas",
+      "ativo": false,
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Vidas por faixa etária",
+      "ocultarSeVazio": true,
+      "fonte": {
+        "assinatura": "faixaVidas"
+      },
+      "colunas": [
+        {
+          "rotulo": "Faixa etária",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Vidas",
+          "de": [
+            "VidasFaixa",
+            "Vidas"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "% da empresa",
+          "de": [
+            "Perc_Faixa"
+          ],
+          "formato": "percentual"
+        }
+      ],
+      "ordenar": false,
+      "destacarRegex": "total|Total"
+    },
+    {
+      "id": "perfil-segmentos",
+      "ativo": false,
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Resultado por faixa etária e sexo",
+      "fonte": {
+        "assinatura": "perfil",
+        "filtro": {
+          "ordem": 1
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Segmento",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Vidas",
+          "de": [
+            "Vidas"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Receita",
+          "de": [
+            "Receita"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Despesa",
+          "de": [
+            "Despesa"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Custo Mensal per capita",
+          "de": [
+            "Custo PMPM"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Sinistralidade",
+          "de": [
+            "Sinistralidade"
+          ],
+          "formato": "percentual",
+          "alerta": {
+            "acima": 75
+          }
+        }
+      ],
+      "ordenar": false,
+      "compacta": true,
+      "destacarRegex": "total|Total",
+      "nota": ""
+    },
+    {
+      "id": "graf-pmpm-faixa",
+      "tipo": "grafico",
+      "estilo": "barra",
+      "eyebrow": " ",
+      "titulo": "Custo por vida por faixa etária",
+      "ordenar": false,
+      "fonte": {
+        "assinatura": "perfil",
+        "filtro": {
+          "ordem": 1,
+          "apenasFaixas": true
+        }
+      },
+      "series": [
+        "Custo PMPM"
+      ],
+      "formato": "moeda",
+      "coresPorBarra": true,
+      "cores": [
+        "#22368F",
+        "#A2B2EF"
+      ]
+    },
+    {
+      "id": "sec-financeiro",
+      "tipo": "secao",
+      "eyebrow": " ",
+      "titulo": "Resultado financeiro"
+    },
+    {
+      "id": "resumo-executivo",
+      "tipo": "resumoExecutivo",
+      "eyebrow": " ",
+      "titulo": "Resumo financeiro · Medicina",
+      "itens": [
+        {
+          "id": "receita",
+          "rotulo": "Receita",
+          "formato": "moedaCurta",
+          "fonte": {
+            "assinatura": "financeiroConsolidado",
+            "filtro": {
+              "grupoEm": [
+                "Medicina",
+                "M"
+              ],
+              "colunaEm": [
+                "TOTAL",
+                "Total"
+              ],
+              "linhaEm": [
+                "RECEITA",
+                "Receita"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "despesa",
+          "rotulo": "Sinistros do período",
+          "formato": "moedaCurta",
+          "fonte": {
+            "assinatura": "financeiroConsolidado",
+            "filtro": {
+              "grupoEm": [
+                "Medicina",
+                "M"
+              ],
+              "colunaEm": [
+                "TOTAL",
+                "Total"
+              ],
+              "linhaEm": [
+                "DESPESA",
+                "Despesa",
+                "Despesa (líquida de coparticipação)",
+                "Despesa (liquida de Coparticipacao)",
+                "Despesa (liquida de Copay)"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "sinistralidade",
+          "rotulo": "Sinistralidade",
+          "formato": "percentual",
+          "alerta": {
+            "acima": 75,
+            "atencao": 70
+          },
+          "fonte": {
+            "assinatura": "financeiroConsolidado",
+            "filtro": {
+              "grupoEm": [
+                "Medicina",
+                "M"
+              ],
+              "colunaEm": [
+                "TOTAL",
+                "Total"
+              ],
+              "linhaEm": [
+                "SINISTRALIDADE",
+                "Sinistralidade"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "vidas",
+          "rotulo": "Vidas",
+          "formato": "inteiro",
+          "fonte": {
+            "assinatura": "financeiroConsolidado",
+            "filtro": {
+              "grupoEm": [
+                "Medicina",
+                "M"
+              ],
+              "colunaEm": [
+                "TOTAL",
+                "Total"
+              ],
+              "linhaEm": [
+                "VIDAS",
+                "Vidas"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "pmpm",
+          "rotulo": "Custo por vida",
+          "formato": "moedaInteira",
+          "derivado": {
+            "de": [
+              "despesa",
+              "vidas"
+            ]
+          }
+        }
+      ],
+      "grafico": {
+        "titulo": "Sinistralidade",
+        "tipo": "sinistralidadeComparativo",
+        "estilo": "linha",
+        "subtituloGrafico": "Sinistralidade",
+        "formato": "percentual",
+        "fonte": {
+          "assinatura": "financeiroMensal",
+          "filtro": {
+            "grupoEm": [
+              "Medicina",
+              "M"
+            ]
+          },
+          "todos": true
+        }
+      }
+    },
+    {
+      "id": "resumo-executivo-odonto",
+      "tipo": "resumoExecutivo",
+      "eyebrow": " ",
+      "titulo": "Resumo financeiro · Odontologia",
+      "ocultarSeVazio": true,
+      "itens": [
+        {
+          "id": "receita",
+          "rotulo": "Receita",
+          "formato": "moedaCurta",
+          "fonte": {
+            "assinatura": "financeiroConsolidado",
+            "filtro": {
+              "grupoEm": [
+                "Odontologia",
+                "O"
+              ],
+              "colunaEm": [
+                "TOTAL",
+                "Total"
+              ],
+              "colunaForaDe": [
+                "TotalGeral"
+              ],
+              "linhaEm": [
+                "RECEITA",
+                "Receita"
+              ],
+              "ordem": 1
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "despesa",
+          "rotulo": "Sinistros do período",
+          "formato": "moedaCurta",
+          "fonte": {
+            "assinatura": "financeiroConsolidado",
+            "filtro": {
+              "grupoEm": [
+                "Odontologia",
+                "O"
+              ],
+              "colunaEm": [
+                "TOTAL",
+                "Total"
+              ],
+              "colunaForaDe": [
+                "TotalGeral"
+              ],
+              "linhaEm": [
+                "DESPESA",
+                "Despesa",
+                "Despesa (líquida de coparticipação)",
+                "Despesa (liquida de Coparticipacao)",
+                "Despesa (liquida de Copay)"
+              ],
+              "ordem": 1
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "sinistralidade",
+          "rotulo": "Sinistralidade",
+          "formato": "percentual",
+          "alerta": {
+            "acima": 75,
+            "atencao": 70
+          },
+          "fonte": {
+            "assinatura": "financeiroConsolidado",
+            "filtro": {
+              "grupoEm": [
+                "Odontologia",
+                "O"
+              ],
+              "colunaEm": [
+                "TOTAL",
+                "Total"
+              ],
+              "colunaForaDe": [
+                "TotalGeral"
+              ],
+              "linhaEm": [
+                "SINISTRALIDADE",
+                "Sinistralidade"
+              ],
+              "ordem": 1
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "vidas",
+          "rotulo": "Vidas",
+          "formato": "inteiro",
+          "fonte": {
+            "assinatura": "financeiroConsolidado",
+            "filtro": {
+              "grupoEm": [
+                "Odontologia",
+                "O"
+              ],
+              "colunaEm": [
+                "TOTAL",
+                "Total"
+              ],
+              "colunaForaDe": [
+                "TotalGeral"
+              ],
+              "linhaEm": [
+                "VIDAS",
+                "Vidas"
+              ],
+              "ordem": 1
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "pmpm",
+          "rotulo": "Custo por vida",
+          "formato": "moedaInteira",
+          "derivado": {
+            "de": [
+              "despesa",
+              "vidas"
+            ]
+          }
+        }
+      ],
+      "grafico": {
+        "titulo": "Receita × Sinistros · Odontologia",
+        "tipo": "receitaSinistrosConsolidado",
+        "estilo": "barra",
+        "subtituloGrafico": "Receita × Sinistros · Odontologia",
+        "formato": "moeda"
+      }
+    },
+    {
+      "id": "resultado-financeiro",
+      "tipo": "resultadoFinanceiro",
+      "eyebrow": " ",
+      "titulo": "Resumo financeiro consolidado do período",
+      "meta": 75,
+      "fontes": {
+        "receita": {
+          "assinatura": "financeiroConsolidado",
+          "filtro": {
+            "ordem": 1,
+            "colunaEm": [
+              "TotalGeral",
+              "TOTAL",
+              "Total"
+            ],
+            "linhaEm": [
+              "RECEITA",
+              "Receita"
+            ]
+          },
+          "agregacao": "primeiro"
+        },
+        "despesa": {
+          "assinatura": "financeiroConsolidado",
+          "filtro": {
+            "ordem": 1,
+            "colunaEm": [
+              "TotalGeral",
+              "TOTAL",
+              "Total"
+            ],
+            "linhaEm": [
+              "DESPESA",
+              "Despesa",
+              "Despesa (líquida de coparticipação)",
+              "Despesa (liquida de Coparticipacao)",
+              "Despesa (liquida de Copay)"
+            ]
+          },
+          "agregacao": "primeiro"
+        },
+        "sinistralidade": {
+          "assinatura": "financeiroConsolidado",
+          "filtro": {
+            "ordem": 1,
+            "colunaEm": [
+              "TotalGeral",
+              "TOTAL",
+              "Total"
+            ],
+            "linhaEm": [
+              "SINISTRALIDADE",
+              "Sinistralidade"
+            ]
+          },
+          "agregacao": "primeiro"
+        }
+      },
+      "mensal": {
+        "fonte": {
+          "assinatura": "financeiroMensal",
+          "filtro": {
+            "ordem": 1
+          }
+        },
+        "receita": "Receita",
+        "despesa": "Despesa (liquida de Copay)",
+        "sinistralidade": "Sinistralidade"
+      },
+      "nota": "",
+      "comentarios": true
+    },
+    {
+      "id": "performance-ativos-inativos",
+      "tipo": "performanceAtivosInativos",
+      "eyebrow": " ",
+      "titulo": "Resumo de performance do contrato",
+      "ocultarSeVazio": true,
+      "meta": 75
+    },
+    {
+      "id": "graf-sinistralidade-mensal",
+      "ativo": false,
+      "tipo": "sinistralidadeMensal",
+      "estilo": "coluna",
+      "eyebrow": " ",
+      "titulo": "Sinistralidade anual",
+      "altura": 220,
+      "fonte": {
+        "assinatura": "financeiroMensal"
+      },
+      "series": [
+        "Receita",
+        "Despesa"
+      ],
+      "formato": "moedaCurta",
+      "meta": 75,
+      "referencia": {
+        "valor": 75,
+        "rotulo": "Meta 75%"
+      },
+      "agruparPorAno": true,
+      "nota": ""
+    },
+    {
+      "id": "comparativo-ano-anterior",
+      "ativo": false,
+      "tipo": "sinistralidadeComparativo",
+      "estilo": "linha",
+      "eyebrow": " ",
+      "titulo": "Sinistralidade: evolução período atual x período anterior",
+      "subtituloGrafico": "Total",
+      "fonte": {
+        "assinatura": "financeiroMensal",
+        "todos": true
+      },
+      "formato": "percentual",
+      "referencia": {
+        "valor": 75,
+        "rotulo": "Meta 75%"
+      }
+    },
+    {
+      "id": "financeiro-mensal",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Resultado financeiro do período",
+      "fonte": {
+        "assinatura": "financeiroMensal",
+        "filtro": {
+          "ordem": 1
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Mês",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Receita",
+          "de": [
+            "Receita",
+            "RECEITA"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Despesa líquida",
+          "rotuloSemCopay": "Despesa",
+          "de": [
+            "Despesa (líquida de coparticipação)",
+            "Despesa (liquida de Coparticipacao)",
+            "Despesa (liquida de Copay)",
+            "Despesa líquida",
+            "Despesa",
+            "DESPESA"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Coparticipação",
+          "somenteComCopay": true,
+          "de": [
+            "Coparticipacao",
+            "Coparticipação",
+            "COPARTICIPACAO",
+            "COPARTICIPAÇÃO"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Impacto de coparticipação",
+          "somenteComCopay": true,
+          "de": [
+            "Impacto de coparticipação",
+            "Impacto coparticipação",
+            "Impacto de Coparticipação",
+            "Impacto Coparticipacao",
+            "Impacto Copay no Custo",
+            "Impacto copay"
+          ],
+          "formato": "percentual",
+          "calculo": "impactoCoparticipacao"
+        },
+        {
+          "rotulo": "Sinistralidade",
+          "rotuloComCopay": "Sinistralidade líquida",
+          "de": [
+            "Sinistralidade",
+            "SINISTRALIDADE"
+          ],
+          "formato": "percentual",
+          "alerta": {
+            "acima": 75
+          }
+        },
+        {
+          "rotulo": "Sinistralidade bruta",
+          "somenteComCopay": true,
+          "de": [
+            "SINISTRALIDADE BRUTA",
+            "Sinistralidade Bruta",
+            "SINISTRALIDADE TOTAL",
+            "Sinistralidade Total",
+            "TOTAL DE SINISTRALIDADE",
+            "Total de Sinistralidade",
+            "Total de sinistralidade",
+            "Sinistralidade_Total"
+          ],
+          "formato": "percentual",
+          "calculo": "sinistralidadeTotal",
+          "alerta": {
+            "acima": 75
+          }
+        }
+      ],
+      "totalizar": true
+    },
+    {
+      "id": "produto-resumo",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Resultado por produto",
+      "fonte": {
+        "assinatura": "produtoResumo",
+        "filtro": {
+          "linhaEm": [
+            "RECEITA",
+            "DESPESA",
+            "SINISTRALIDADE",
+            "COPARTICIPACAO",
+            "Coparticipacao",
+            "IMPACTO COPAY NO CUSTO",
+            "Impacto Copay no Custo",
+            "IMPACTO COPARTICIPACAO",
+            "Impacto coparticipação",
+            "Impacto de Coparticipação",
+            "SINISTRALIDADE TOTAL",
+            "Sinistralidade Total",
+            "TOTAL DE SINISTRALIDADE",
+            "Total de Sinistralidade"
+          ]
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Produto",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Receita",
+          "de": [
+            "RECEITA"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Despesa",
+          "rotuloComCopay": "Despesa líquida",
+          "de": [
+            "DESPESA"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Impacto de coparticipação",
+          "somenteComCopay": true,
+          "de": [
+            "IMPACTO COPAY NO CUSTO",
+            "Impacto Copay no Custo",
+            "IMPACTO COPARTICIPACAO",
+            "Impacto coparticipação",
+            "Impacto de Coparticipação",
+            "Impacto de coparticipação",
+            "Impacto Coparticipacao",
+            "Impacto copay",
+            "COPARTICIPACAO",
+            "Coparticipacao"
+          ],
+          "formato": "percentual",
+          "calculo": "impactoCoparticipacao"
+        },
+        {
+          "rotulo": "Sinistralidade",
+          "rotuloComCopay": "Sinistralidade líquida",
+          "de": [
+            "SINISTRALIDADE"
+          ],
+          "formato": "percentual",
+          "alerta": {
+            "acima": 75
+          }
+        },
+        {
+          "rotulo": "Sinistralidade bruta",
+          "somenteComCopay": true,
+          "de": [
+            "SINISTRALIDADE BRUTA",
+            "Sinistralidade Bruta",
+            "SINISTRALIDADE TOTAL",
+            "Sinistralidade Total",
+            "TOTAL DE SINISTRALIDADE",
+            "Total de Sinistralidade",
+            "Total de sinistralidade",
+            "Sinistralidade_Total"
+          ],
+          "formato": "percentual",
+          "calculo": "sinistralidadeTotal",
+          "alerta": {
+            "acima": 75
+          }
+        }
+      ],
+      "ordenar": {
+        "por": "Receita"
+      },
+      "nota": ""
+    },
+    {
+      "id": "planos",
+      "ativo": false,
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Resultado por plano",
+      "fonte": {
+        "assinatura": "planos",
+        "filtro": {
+          "excluirSemDados": true,
+          "linhaEm": [
+            "Receita",
+            "Despesa",
+            "Sinistralidade"
+          ]
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Plano",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Receita",
+          "de": [
+            "Receita"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Despesa",
+          "de": [
+            "Despesa"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Sinistralidade",
+          "de": [
+            "Sinistralidade"
+          ],
+          "formato": "percentual",
+          "alerta": {
+            "acima": 75
+          }
+        }
+      ],
+      "ordenar": {
+        "por": "Receita"
+      },
+      "totalizar": true
+    },
+    {
+      "id": "despesa-produto-mensal",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Despesa mensal por produto",
+      "fonte": {
+        "assinatura": "produtoMensal",
+        "filtro": {
+          "ordem": 1,
+          "linhaEm": [
+            "Despesa"
+          ]
+        },
+        "pivot": {
+          "eixo": "Grupo",
+          "serie": "Coluna"
+        }
+      },
+      "colunasAuto": {
+        "rotuloEixo": "Produto",
+        "formato": "moedaInteira",
+        "maximo": 14
+      },
+      "totalizar": true,
+      "compacta": true
+    },
+    {
+      "id": "distribuicao-receita-despesa",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Participação na receita × participação na despesa",
+      "fonte": {
+        "assinatura": "perfil",
+        "filtro": {
+          "ordem": 2
+        },
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Grupo"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Segmento",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "% da receita",
+          "de": [
+            "Receita"
+          ],
+          "formato": "percentual"
+        },
+        {
+          "rotulo": "% da despesa",
+          "de": [
+            "Despesa"
+          ],
+          "formato": "percentual"
+        }
+      ],
+      "ordenar": false,
+      "compacta": true,
+      "destacarRegex": "total|Total"
+    },
+    {
+      "id": "coparticipacao-mensal",
+      "tipo": "tabela",
+      "eyebrow": "Coparticipação",
+      "titulo": "Distribuição mensal de coparticipação",
+      "ocultarSeSemCopay": true,
+      "fonte": {
+        "assinatura": "financeiroMensal",
+        "filtro": {
+          "ordem": 1
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Mês",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Despesa líquida",
+          "de": [
+            "Despesa (líquida de coparticipação)",
+            "Despesa (liquida de Coparticipacao)",
+            "Despesa (liquida de Copay)",
+            "Despesa líquida",
+            "Despesa"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Coparticipação",
+          "de": [
+            "Coparticipacao",
+            "Coparticipação",
+            "COPARTICIPACAO"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Despesa bruta",
+          "formato": "moeda",
+          "calculo": "despesaBruta"
+        },
+        {
+          "rotulo": "Impacto de coparticipação",
+          "formato": "percentual",
+          "calculo": "impactoCoparticipacao"
+        }
+      ],
+      "totalizar": true,
+      "nota": ""
+    },
+    {
+      "id": "sec-utilizacao",
+      "tipo": "secao",
+      "eyebrow": " ",
+      "titulo": "Utilização"
+    },
+    {
+      "id": "evento-benchmark",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Despesa por tipo de evento",
+      "fonte": {
+        "assinatura": "eventoBenchmark",
+        "filtro": {
+          "ordem": 1,
+          "distinto": true
+        },
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Evento",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Quantidade",
+          "de": [
+            "Quantidade",
+            "Qtd"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Custo (R$)",
+          "de": [
+            "Custo (R$)",
+            "Custo",
+            "Total",
+            "Valor"
+          ],
+          "formato": "decimal"
+        },
+        {
+          "rotulo": "Custo Total %",
+          "de": [
+            "Custo Total %",
+            "% Empresa",
+            "% Despesa",
+            "Perc_Despesa"
+          ],
+          "formato": "percentual2"
+        },
+        {
+          "rotulo": "Benchmark*",
+          "de": [
+            "Benchmark*",
+            "% Despesa Bench",
+            "Perc_Despesa_Bench"
+          ],
+          "formato": "percentual2"
+        },
+        {
+          "rotulo": "Ano 1",
+          "de": [
+            "Ano 1",
+            "Anterior",
+            "Ano Anterior"
+          ],
+          "formato": "decimal"
+        },
+        {
+          "rotulo": "Ano 2",
+          "de": [
+            "Ano 2",
+            "Atual",
+            "Ano Atual"
+          ],
+          "formato": "decimal"
+        },
+        {
+          "rotulo": "Variação",
+          "de": [
+            "VarCusto",
+            "VarCustoPct",
+            "Variação",
+            "Variacao"
+          ],
+          "formato": "variacao",
+          "alerta": {
+            "acima": 0
+          }
+        }
+      ],
+      "ordenar": false,
+      "destacarRegex": "total",
+      "nota": "",
+      "comentarios": true,
+      "superHeaders": [
+        {
+          "titulo": "Evento",
+          "colspan": 1
+        },
+        {
+          "titulo": "CONSOLIDADO DE UTILIZAÇÃO DOS SERVIÇOS MÉDICOS POR CUSTO",
+          "colspan": 4
+        },
+        {
+          "titulo": "PERÍODO ATUAL × ANTERIOR",
+          "colspan": 3
+        }
+      ]
+    },
+    {
+      "id": "evento-mensal",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Despesa mensal por tipo de evento",
+      "fonte": {
+        "assinatura": "eventoMensal",
+        "filtro": {
+          "ordem": 1,
+          "somentePeriodos": true
+        },
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunasAuto": {
+        "rotuloEixo": "Evento",
+        "formato": "moedaInteira",
+        "maximo": 14
+      },
+      "garantirMesesPeriodo": true,
+      "ordenar": false,
+      "destacarRegex": "total|Total",
+      "nota": "",
+      "comentarios": true,
+      "compacta": true
+    },
+    {
+      "id": "graf-livre-escolha",
+      "tipo": "grafico",
+      "estilo": "coluna",
+      "eyebrow": " ",
+      "titulo": "Despesa por sistema de pagamento - Rede e Livre escolha",
+      "fonte": {
+        "assinatura": "redeLivreEscolha",
+        "filtro": {
+          "ordem": 3
+        }
+      },
+      "altura": 380,
+      "formato": "percentual",
+      "hoverValorBruto": true
+    },
+    {
+      "id": "rede-livre-escolha-mensal",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Despesa mensal por sistema de pagamento -   Rede e Livre escolha",
+      "fonte": {
+        "assinatura": "redeLivreEscolha",
+        "filtro": {
+          "ordem": 1,
+          "colunaRegex": "^(?!Perc)"
+        }
+      },
+      "superHeaders": [
+        {
+          "titulo": "Período",
+          "colspan": 1
+        },
+        {
+          "titulo": "Rede Credenciada",
+          "colspan": 1
+        },
+        {
+          "titulo": "Livre Escolha (Reembolso por Plano)",
+          "colspan": 3
+        }
+      ],
+      "totalizar": true,
+      "colunas": [
+        {
+          "rotulo": "Mês",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Rede credenciada",
+          "de": [
+            "Rede Credenciada"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Livre escolha",
+          "de": [
+            "Livre Escolha"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "LE · Premium",
+          "de": [
+            "Livre Escolha - Premium",
+            "Livre Escolha - PREMIUM"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "LE · Corporate",
+          "de": [
+            "Livre Escolha - Corporate",
+            "Livre Escolha - CORPORATE"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "LE · Skill",
+          "de": [
+            "Livre Escolha - Skill",
+            "Livre Escolha - SKILL"
+          ],
+          "formato": "moeda"
+        }
+      ]
+    },
+    {
+      "id": "mix-le-rc",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Rede credenciada × livre escolha por tipo de evento",
+      "fonte": {
+        "assinatura": "mixLeRc",
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "superHeaders": [
+        {
+          "titulo": "Evento",
+          "colspan": 1
+        },
+        {
+          "titulo": "PERÍODO ANTERIOR (ANO 1)",
+          "colspan": 3
+        },
+        {
+          "titulo": "PERÍODO ATUAL (ANO 2)",
+          "colspan": 3
+        },
+        {
+          "titulo": "ACESSO & BENCHMARK",
+          "colspan": 5
+        }
+      ],
+      "colunas": [
+        {
+          "rotulo": "Evento",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Quantidade",
+          "de": [
+            "QtdAnt",
+            "QuantidadeAnt",
+            "QuantidadeAnoAnterior"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Custo (R$)",
+          "de": [
+            "CustoAnt",
+            "Ano 1",
+            "CustoAnoAnterior",
+            "_vAnt"
+          ],
+          "formato": "moeda",
+          "calculo": "custoAnterior"
+        },
+        {
+          "rotulo": "% do custo total",
+          "de": [
+            "PercTotalAnt",
+            "PercTotalAnoAnterior",
+            "PercTotalAnterior"
+          ],
+          "formato": "percentual",
+          "escala": 100,
+          "calculo": "percentualCustoAnterior"
+        },
+        {
+          "rotulo": "Quantidade",
+          "de": [
+            "Quantidade",
+            "Qtd"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Custo (R$)",
+          "de": [
+            "Custo",
+            "Total",
+            "Valor"
+          ],
+          "formato": "moeda",
+          "calculo": "custoEvento"
+        },
+        {
+          "rotulo": "% do custo total",
+          "de": [
+            "PercTotal"
+          ],
+          "formato": "percentual",
+          "escala": 100
+        },
+        {
+          "rotulo": "% Benchmark",
+          "de": [
+            "PercBench"
+          ],
+          "formato": "percentual",
+          "escala": 100
+        },
+        {
+          "rotulo": "Rede credenciada",
+          "de": [
+            "PercRC"
+          ],
+          "formato": "percentual",
+          "escala": 100
+        },
+        {
+          "rotulo": "Livre escolha",
+          "de": [
+            "PercLE"
+          ],
+          "formato": "percentual",
+          "escala": 100,
+          "alerta": {
+            "acima": 20
+          }
+        },
+        {
+          "rotulo": "Δ Utilização RC",
+          "de": [
+            "VarRC",
+            "PercVarRC"
+          ],
+          "formato": "pontos",
+          "alerta": {
+            "abaixo": 0,
+            "invertido": true
+          }
+        },
+        {
+          "rotulo": "Var. Período Anterior",
+          "de": [
+            "VarCusto",
+            "PercVarCusto"
+          ],
+          "formato": "variacao",
+          "alerta": {
+            "acima": 0
+          }
+        }
+      ],
+      "ordenar": false,
+      "destacarRegex": "total",
+      "nota": ""
+    },
+    {
+      "id": "comparativo-benchmark",
+      "ativo": false,
+      "tipo": "comparativo",
+      "eyebrow": " ",
+      "titulo": "Carteira × benchmark Omint",
+      "fonte": {
+        "assinatura": "indicadores",
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "carteira": "Indicador",
+      "benchmark": "Benchmark",
+      "formato": "decimal",
+      "melhorMenor": true,
+      "tolerancia": 2,
+      "rotuloCarteira": "Carteira",
+      "rotuloBenchmark": "Benchmark Omint",
+      "nota": ""
+    },
+    {
+      "id": "indicadores-benchmark",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Indicadores de eventos × benchmark",
+      "fonte": {
+        "assinatura": "indicadores",
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Indicador",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Quantidade",
+          "de": [
+            "Quantidade"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Empresa",
+          "de": [
+            "Indicador"
+          ],
+          "formato": "decimal"
+        },
+        {
+          "rotulo": "Benchmark Omint",
+          "de": [
+            "Benchmark"
+          ],
+          "formato": "decimal"
+        },
+        {
+          "rotulo": "Variação vs Benchmark",
+          "de": [
+            "Dif",
+            "DIF"
+          ],
+          "formato": "variacao",
+          "alerta": {
+            "acima": 0
+          }
+        }
+      ],
+      "ordenar": false,
+      "nota": "",
+      "compacta": true
+    },
+    {
+      "id": "kpi-internacao",
+      "tipo": "kpiInternacao",
+      "eyebrow": " ",
+      "titulo": "Custo médio de internação e benchmark hospitalar",
+      "fonte": {
+        "assinatura": "indicadores"
+      }
+    },
+    {
+      "id": "volume-internacao",
+      "ativo": false,
+      "tipo": "volumeInternacao",
+      "eyebrow": " ",
+      "titulo": "Volume e frequência de internações",
+      "fonte": {
+        "assinatura": "indicadores"
+      },
+      "nota": ""
+    },
+    {
+      "id": "sec-prestadores",
+      "ativo": false,
+      "tipo": "secao",
+      "eyebrow": " ",
+      "titulo": "Prestadores e usuários"
+    },
+    {
+      "id": "top-hospitais",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Top 10 prestadores hospitalares",
+      "fonte": {
+        "assinatura": "prestadores",
+        "filtro": {
+          "ordem": 1
+        },
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Prestador",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Despesa",
+          "de": [
+            "Total"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "% da despesa",
+          "de": [
+            "%"
+          ],
+          "formato": "percentual"
+        }
+      ],
+      "ordenar": {
+        "por": "Despesa"
+      },
+      "limite": 10,
+      "totalizar": true,
+      "comentarios": true
+    },
+    {
+      "id": "top-prestadores-bloco2",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Top 10 prestadores · pronto atendimento",
+      "fonte": {
+        "assinatura": "prestadores",
+        "filtro": {
+          "ordem": 2
+        },
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Prestador",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Despesa",
+          "de": [
+            "Total"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "% da despesa",
+          "de": [
+            "%"
+          ],
+          "formato": "percentual"
+        }
+      ],
+      "ordenar": {
+        "por": "Despesa"
+      },
+      "limite": 10,
+      "compacta": true,
+      "totalizar": true,
+      "rotuloTotal": "Total",
+      "comentarios": true
+    },
+    {
+      "id": "top-laboratorios",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Top 10 laboratórios e diagnóstico",
+      "fonte": {
+        "assinatura": "prestadores",
+        "filtro": {
+          "ordem": 3
+        },
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Prestador",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Despesa",
+          "de": [
+            "Total"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "% da despesa",
+          "de": [
+            "%"
+          ],
+          "formato": "percentual"
+        }
+      ],
+      "ordenar": {
+        "por": "Despesa"
+      },
+      "limite": 10,
+      "comentarios": true
+    },
+    {
+      "id": "top-usuarios-despesa",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "20 maiores usuários por despesa · Parte 1",
+      "fonte": {
+        "assinatura": "topDespesa",
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Ranking",
+          "de": "__eixo",
+          "formato": "ranking"
+        },
+        {
+          "rotulo": "Despesa",
+          "de": [
+            "Despesa"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "% do total",
+          "de": [
+            "PercDespesa"
+          ],
+          "formato": "percentual",
+          "escala": 100
+        },
+        {
+          "rotulo": "% acumulado",
+          "de": [
+            "PercDespesaAC"
+          ],
+          "formato": "percentual",
+          "escala": 100
+        },
+        {
+          "rotulo": "Rede",
+          "de": [
+            "DespesaRc"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Livre escolha",
+          "de": [
+            "DespesaLe"
+          ],
+          "formato": "moeda"
+        }
+      ],
+      "ordenar": {
+        "por": "Despesa"
+      },
+      "inicio": 0,
+      "limite": 10,
+      "nota": ""
+    },
+    {
+      "id": "top-usuarios-despesa-pt2",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "20 maiores usuários por despesa · Parte 2",
+      "ocultarSeVazio": true,
+      "fonte": {
+        "assinatura": "topDespesa",
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Ranking",
+          "de": "__eixo",
+          "formato": "ranking"
+        },
+        {
+          "rotulo": "Despesa",
+          "de": [
+            "Despesa"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "% do total",
+          "de": [
+            "PercDespesa"
+          ],
+          "formato": "percentual",
+          "escala": 100
+        },
+        {
+          "rotulo": "% acumulado",
+          "de": [
+            "PercDespesaAC"
+          ],
+          "formato": "percentual",
+          "escala": 100
+        },
+        {
+          "rotulo": "Rede",
+          "de": [
+            "DespesaRc"
+          ],
+          "formato": "moeda"
+        },
+        {
+          "rotulo": "Livre escolha",
+          "de": [
+            "DespesaLe"
+          ],
+          "formato": "moeda"
+        }
+      ],
+      "ordenar": {
+        "por": "Despesa"
+      },
+      "inicio": 10,
+      "limite": 10,
+      "totalizar": true,
+      "rotuloTotal": "Total",
+      "nota": ""
+    },
+    {
+      "id": "top-frequencia-a",
+      "ativo": false,
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "20 maiores usuários por frequência · Consultas · Parte 1",
+      "colunasIguais": true,
+      "fonte": {
+        "assinatura": "topFrequencia",
+        "indice": 0,
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Ranking",
+          "de": "__eixo",
+          "formato": "ranking"
+        },
+        {
+          "rotulo": "Frequência",
+          "de": [
+            "Frequencia"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Rede",
+          "de": [
+            "FreqRC"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Livre escolha",
+          "de": [
+            "FreqLE"
+          ],
+          "formato": "inteiro"
+        }
+      ],
+      "ordenar": {
+        "por": "Frequência"
+      },
+      "inicio": 0,
+      "limite": 10,
+      "compacta": true,
+      "nota": ""
+    },
+    {
+      "id": "top-frequencia-a-pt2",
+      "ativo": false,
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "20 maiores usuários por frequência · Consultas · Parte 2",
+      "colunasIguais": true,
+      "ocultarSeVazio": true,
+      "fonte": {
+        "assinatura": "topFrequencia",
+        "indice": 0,
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Ranking",
+          "de": "__eixo",
+          "formato": "ranking"
+        },
+        {
+          "rotulo": "Frequência",
+          "de": [
+            "Frequencia"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Rede",
+          "de": [
+            "FreqRC"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Livre escolha",
+          "de": [
+            "FreqLE"
+          ],
+          "formato": "inteiro"
+        }
+      ],
+      "ordenar": {
+        "por": "Frequência"
+      },
+      "inicio": 10,
+      "limite": 10,
+      "compacta": true,
+      "totalizar": true,
+      "rotuloTotal": "Total",
+      "nota": ""
+    },
+    {
+      "id": "top-frequencia-b",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "20 maiores usuários por frequência · Pronto Socorro · Parte 1",
+      "colunasIguais": true,
+      "fonte": {
+        "assinatura": "topFrequencia",
+        "indice": 1,
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Ranking",
+          "de": "__eixo",
+          "formato": "ranking"
+        },
+        {
+          "rotulo": "Frequência",
+          "de": [
+            "Frequencia"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Rede",
+          "de": [
+            "FreqRC"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Livre escolha",
+          "de": [
+            "FreqLE"
+          ],
+          "formato": "inteiro"
+        }
+      ],
+      "ordenar": {
+        "por": "Frequência"
+      },
+      "inicio": 0,
+      "limite": 10,
+      "compacta": true,
+      "nota": ""
+    },
+    {
+      "id": "top-frequencia-b-pt2",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "20 maiores usuários por frequência · Pronto Socorro · Parte 2",
+      "colunasIguais": true,
+      "ocultarSeVazio": true,
+      "fonte": {
+        "assinatura": "topFrequencia",
+        "indice": 1,
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Ranking",
+          "de": "__eixo",
+          "formato": "ranking"
+        },
+        {
+          "rotulo": "Frequência",
+          "de": [
+            "Frequencia"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Rede",
+          "de": [
+            "FreqRC"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Livre escolha",
+          "de": [
+            "FreqLE"
+          ],
+          "formato": "inteiro"
+        }
+      ],
+      "ordenar": {
+        "por": "Frequência"
+      },
+      "inicio": 10,
+      "limite": 10,
+      "compacta": true,
+      "totalizar": true,
+      "rotuloTotal": "Total",
+      "nota": ""
+    },
+    {
+      "id": "top-frequencia-c",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "20 maiores usuários por frequência · Terapias Seriadas · Parte 1",
+      "colunasIguais": true,
+      "fonte": {
+        "assinatura": "topFrequencia",
+        "indice": 2,
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Ranking",
+          "de": "__eixo",
+          "formato": "ranking"
+        },
+        {
+          "rotulo": "Frequência",
+          "de": [
+            "Frequencia"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Rede",
+          "de": [
+            "FreqRC"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Livre escolha",
+          "de": [
+            "FreqLE"
+          ],
+          "formato": "inteiro"
+        }
+      ],
+      "ordenar": {
+        "por": "Frequência"
+      },
+      "inicio": 0,
+      "limite": 10,
+      "compacta": true,
+      "nota": ""
+    },
+    {
+      "id": "top-frequencia-c-pt2",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "20 maiores usuários por frequência · Terapias Seriadas · Parte 2",
+      "colunasIguais": true,
+      "ocultarSeVazio": true,
+      "fonte": {
+        "assinatura": "topFrequencia",
+        "indice": 2,
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Ranking",
+          "de": "__eixo",
+          "formato": "ranking"
+        },
+        {
+          "rotulo": "Frequência",
+          "de": [
+            "Frequencia"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Rede",
+          "de": [
+            "FreqRC"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Livre escolha",
+          "de": [
+            "FreqLE"
+          ],
+          "formato": "inteiro"
+        }
+      ],
+      "ordenar": {
+        "por": "Frequência"
+      },
+      "inicio": 10,
+      "limite": 10,
+      "compacta": true,
+      "totalizar": true,
+      "rotuloTotal": "Total",
+      "nota": ""
+    },
+    {
+      "id": "checkup-antigo",
+      "tipo": "kpi",
+      "eyebrow": " ",
+      "titulo": "Benefício de check-up (versão antiga)",
+      "nota": "",
+      "itens": [
+        {
+          "id": "emitidos",
+          "rotulo": "Vouchers emitidos",
+          "formato": "inteiro",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Emitidos"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "realizados",
+          "rotulo": "Check-ups realizados",
+          "formato": "inteiro",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Utilizados"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "taxaAdesao",
+          "rotulo": "Taxa de adesão",
+          "formato": "percentual",
+          "derivado": {
+            "de": [
+              "realizados",
+              "emitidos"
+            ],
+            "operacao": "percentual"
+          }
+        },
+        {
+          "id": "custoTotal",
+          "rotulo": "Custo total",
+          "formato": "moeda",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Custo do CheckUp"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "custoMedio",
+          "rotulo": "Custo médio",
+          "formato": "moeda",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Custo Médio do CheckUp"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "impactoExames",
+          "rotulo": "Impacto em exames",
+          "formato": "percentual",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Impacto em Exames",
+                "Impacto em exames"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "impactoCustoTotal",
+          "rotulo": "Impacto no custo",
+          "formato": "percentual",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Impacto Custo Total",
+                "Impacto no Custo Total",
+                "Impacto no custo total"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        }
+      ],
+      "tabelaExtra": {
+        "garantirMesesPeriodo": true,
+        "fonte": {
+          "assinatura": "checkup",
+          "filtro": {
+            "ordem": 1,
+            "somentePeriodos": true
+          }
+        },
+        "colunas": [
+          {
+            "rotulo": "Mês",
+            "de": "__eixo"
+          },
+          {
+            "rotulo": "Emitidos",
+            "de": [
+              "Emitidos"
+            ],
+            "formato": "inteiro"
+          },
+          {
+            "rotulo": "Realizados",
+            "de": [
+              "Utilizados"
+            ],
+            "formato": "inteiro"
+          },
+          {
+            "rotulo": "Custo",
+            "de": [
+              "Custo do CheckUp"
+            ],
+            "formato": "moeda"
+          }
+        ]
+      }
+    },
+    {
+      "id": "checkup",
+      "tipo": "kpi",
+      "eyebrow": " ",
+      "titulo": "Benefício de check-up",
+      "itens": [
+        {
+          "id": "emitidos",
+          "rotulo": "Vouchers emitidos",
+          "formato": "inteiro",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Emitidos"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "realizados",
+          "rotulo": "Check-ups realizados",
+          "formato": "inteiro",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Utilizados"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "taxaAdesao",
+          "rotulo": "Taxa de adesão",
+          "formato": "percentual",
+          "derivado": {
+            "de": [
+              "realizados",
+              "emitidos"
+            ],
+            "operacao": "percentual"
+          }
+        },
+        {
+          "id": "custoTotal",
+          "rotulo": "Custo total",
+          "formato": "moeda",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Custo do CheckUp"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "custoMedio",
+          "rotulo": "Custo médio",
+          "formato": "moeda",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Custo Médio do CheckUp"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "impactoExames",
+          "rotulo": "Impacto em exames",
+          "formato": "percentual",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Impacto em Exames",
+                "Impacto em exames"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        },
+        {
+          "id": "impactoCustoTotal",
+          "rotulo": "Impacto no custo",
+          "formato": "percentual",
+          "fonte": {
+            "assinatura": "checkup",
+            "filtro": {
+              "ordem": 1,
+              "colunaEm": [
+                "Acumulado",
+                "ACUMULADO"
+              ],
+              "linhaEm": [
+                "Impacto Custo Total",
+                "Impacto no Custo Total",
+                "Impacto no custo total"
+              ]
+            },
+            "agregacao": "primeiro"
+          }
+        }
+      ],
+      "tabelaExtra": {
+        "fonte": {
+          "assinatura": "checkup",
+          "filtro": {
+            "ordem": 1,
+            "somentePeriodos": true
+          }
+        },
+        "colunas": [
+          {
+            "rotulo": "Mês",
+            "de": "__eixo"
+          },
+          {
+            "rotulo": "Emitidos",
+            "de": [
+              "Emitidos"
+            ],
+            "formato": "inteiro"
+          },
+          {
+            "rotulo": "Realizados",
+            "de": [
+              "Utilizados"
+            ],
+            "formato": "inteiro"
+          },
+          {
+            "rotulo": "Custo",
+            "de": [
+              "Custo do CheckUp"
+            ],
+            "formato": "moeda"
+          },
+          {
+            "rotulo": "Custo médio",
+            "de": [
+              "Custo Médio do CheckUp"
+            ],
+            "formato": "moeda"
+          }
+        ]
+      }
+    },
+    {
+      "id": "checkup-pendentes",
+      "tipo": "tabela",
+      "eyebrow": " ",
+      "titulo": "Vouchers de check-up ainda não utilizados",
+      "fonte": {
+        "assinatura": "checkupPendentes",
+        "filtro": {
+          "colunaEm": [
+            "Sexo",
+            "Idade",
+            "Plano",
+            "DtEmissao",
+            "DtVencimento",
+            "Realizou"
+          ]
+        },
+        "pivot": {
+          "eixo": "Linha",
+          "serie": "Coluna"
+        }
+      },
+      "colunas": [
+        {
+          "rotulo": "Voucher",
+          "de": "__eixo"
+        },
+        {
+          "rotulo": "Sexo",
+          "de": [
+            "Sexo"
+          ]
+        },
+        {
+          "rotulo": "Idade",
+          "de": [
+            "Idade"
+          ],
+          "formato": "inteiro"
+        },
+        {
+          "rotulo": "Plano",
+          "de": [
+            "Plano"
+          ]
+        },
+        {
+          "rotulo": "Emissão",
+          "de": [
+            "DtEmissao"
+          ]
+        },
+        {
+          "rotulo": "Vencimento",
+          "de": [
+            "DtVencimento"
+          ]
+        },
+        {
+          "rotulo": "Realizou",
+          "de": [
+            "Realizou"
+          ]
+        }
+      ],
+      "ordenar": false,
+      "limite": 15,
+      "nota": ""
+    }
+  ]
+}

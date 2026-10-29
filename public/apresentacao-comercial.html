@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Omint · Apresentação Comercial</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/apresentacao-comercial.css" />
+</head>
+<body class="app" data-modo="edicao">
+
+  <div class="pagina-apresentacao">
+  <!-- ===== Marca e parâmetros da carga ===== -->
+  <header class="cabecalho-apresentacao">
+    <div class="cabecalho-topo">
+      <div class="toolbar-marca">
+        <div class="marca-logo" role="img" aria-label="Omint Saúde">
+          <img class="marca-base" src="/Group 1.svg" alt="Omint" />
+          <span class="marca-subtitulo">SAÚDE</span>
+        </div>
+      </div>
+      <div id="badgeModoFallback" class="badge-modo-fallback" style="display: none;" title="A API de dados reais não respondeu ou retornou dados insuficientes. Exibindo dados simulados para demonstração institucional.">
+        <span class="badge-fallback-dot"></span>
+        Modo Demonstração
+      </div>
+    </div>
+
+    <div class="toolbar">
+    <label class="campo campo-filtro" title="Ir para um relatório específico">Relatório
+      <select id="seletorRelatorio" disabled aria-label="Selecionar relatório">
+        <option value="">Aguardando dados...</option>
+      </select>
+    </label>
+    <label class="campo campo-filtro">Código do grupo
+      <input id="cdEmpresa" type="text" inputmode="numeric" placeholder="00082120" autocomplete="on" />
+    </label>
+    <label class="campo campo-filtro">Data inicial
+      <input id="dataInicial" type="date" />
+    </label>
+    <label class="campo campo-filtro">Data final
+      <input id="dataFinal" type="date" />
+    </label>
+    <label class="check">
+      <input id="ocultarVazios" type="checkbox" checked /> Ocultar slides sem dados
+    </label>
+
+    <button id="carregarDados" class="btn btn-primario" type="button">Aplicar</button>
+    <button id="downloadPDF" class="btn" type="button" disabled>Baixar PDF</button>
+    <button id="publicarLink" class="btn" type="button" disabled title="Gera o link de leitura para a empresa">Gerar link externo</button>
+    </div>
+
+    <button id="btnToggleToolbar" class="btn btn-icone btn-toggle-toolbar" type="button" aria-expanded="true" title="Recolher barra de ferramentas" aria-label="Recolher barra de ferramentas">
+      <svg class="icone-toggle-toolbar" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m18 15-6-6-6 6"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ===== Palco ===== -->
+  <main class="palco">
+    <div class="palco-inner">
+      <div id="slidesContainer">
+        <div class="loading">Informe a empresa e o período e clique em “Aplicar”.</div>
+      </div>
+    </div>
+  </main>
+
+  
+  <button id="prevSlide" class="btn-lateral btn-lateral-esq" type="button" aria-label="Slide anterior" disabled>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button id="nextSlide" class="btn-lateral btn-lateral-dir" type="button" aria-label="Próximo slide" disabled>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+
+  <!-- ===== Navegação ===== -->
+  <footer class="navegacao">
+    <div class="progress-track"><div id="progress-bar"></div></div>
+    <div class="navegacao-controles">
+      <div id="slideIndicator">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" id="slideIndicatorInput" value="1" aria-label="Slide atual" autocomplete="off"><span class="slide-separator" aria-hidden="true">/</span><span id="slideIndicatorTotal">0</span>
+      </div>
+    </div>
+    
+  </footer>
+  </div>
+
+  <!-- ===== Highlights (menu lateral) ===== -->
+  <button id="drawerToggle" class="btn btn-icone drawer-toggle" type="button"
+          aria-controls="drawerHighlights" aria-expanded="false" title="Highlights (Ctrl+H)">✦</button>
+
+  <aside id="drawerHighlights" class="drawer" aria-hidden="true">
+    <div class="drawer-topo">
+      <span class="drawer-label">HIGHLIGHTS</span>
+      <button id="fecharDrawer" class="btn-x" type="button" aria-label="Fechar">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M1 1L13 13M1 13L13 1" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="drawer-titulo">
+      <h2>Adicione um comentário</h2>
+      <p>Uma frase por slide, gerada por IA e editável</p>
+    </div>
+
+    <div class="drawer-acoes">
+      <button id="gerarHighlights" class="btn-ia" type="button">Gerar com IA</button>
+      <button id="salvarHighlights" class="btn-secundario" type="button">Salvar</button>
+      <button id="baixarHighlights" class="btn-secundario" type="button">JSON</button>
+    </div>
+
+    <div class="drawer-prompt">
+      <textarea id="promptPersonalizado" rows="3"
+        placeholder="Ex.: Cole dados de contextualização..."></textarea>
+    </div>
+
+    <div id="statusHighlights" class="drawer-status" role="status"></div>
+    <div id="listaHighlights" class="drawer-lista"></div>
+  </aside>
+
+  <!-- ===== Botão Modo Apresentação (Tela Cheia) ===== -->
+  <button id="btnApresentacao" class="btn-apresentacao-flutuante" type="button" disabled aria-label="Modo apresentação (tela cheia)" title="Aguarde o carregamento dos dados para iniciar a apresentação">
+    <svg class="icone-tela-cheia" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+    </svg>
+    <svg class="icone-sair-tela-cheia" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 14h6m0 0v6m0-6L3 21m17-7h-6m0 0v6m0-6l7 7M10 4v6m0 0H4m6 0L3 3m10 7h6m-6 0V4m0 6l7-7"/>
+    </svg>
+  </button>
+
+  <script src="/apresentacao-comercial.js"></script>
+  <script src="/apresentacao-highlights.js"></script>
+</body>
+</html>

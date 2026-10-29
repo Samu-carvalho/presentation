@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Omint · Relatório de sinistralidade</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/apresentacao-comercial.css" />
+</head>
+<!-- data-modo="leitura": o engine desliga edição de textos e não espera o drawer de highlights.
+     Os parâmetros vêm de ?token=… (resolvido em /api/apresentacao/publica/:token). -->
+<body class="app" data-modo="leitura">
+
+  <div class="pagina-apresentacao">
+  <header class="toolbar">
+    <div class="toolbar-marca">
+      <img src="/img/omint-saude-e-seguros.svg" alt="Omint" onerror="this.style.display='none'" />
+      <span>Relatório de sinistralidade</span>
+    </div>
+    <button id="downloadPDF" class="btn btn-primario" type="button" disabled>Baixar PDF</button>
+  </header>
+
+  <main class="palco">
+    <div class="palco-inner">
+      <div id="slidesContainer">
+        <div class="loading">Carregando apresentação…</div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="navegacao">
+    <div class="progress-track"><div id="progress-bar"></div></div>
+    <button id="prevSlide" class="btn btn-icone" type="button" aria-label="Slide anterior" disabled>‹</button>
+    <span id="slideIndicator">0 / 0</span>
+    <button id="nextSlide" class="btn btn-icone" type="button" aria-label="Próximo slide" disabled>›</button>
+    <span class="atalhos">← → navegam · Home/End</span>
+  </footer>
+  </div>
+
+  <!-- Apenas o engine. apresentacao-highlights.js NÃO é carregado aqui:
+       a barra de highlight é renderizada pelo próprio engine a partir do JSON salvo. -->
+  <script src="/apresentacao-comercial.js"></script>
+</body>
+</html>

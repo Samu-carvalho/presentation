@@ -1,0 +1,676 @@
+Qual é o status do processo?
+🤖 Chatbot Omint – Área de Utilização
+________________________________________
+✅ 1. O que é área de utilização do plano Omint?
+Resposta:
+É a região onde o beneficiário pode utilizar os serviços médicos, conforme o plano contratado.
+________________________________________
+✅ 2. A área de utilização é igual para todos os planos?
+Resposta:
+Não. A área de utilização varia conforme a linha e o produto contratado.
+________________________________________
+🔹 Linha Kipp
+✅ 3. Qual é a área de utilização da Linha Kipp?
+Resposta:
+A utilização é restrita às seguintes cidades:
+Arujá, Biritiba-Mirim, Ferraz de Vasconcelos, Guararema, Guarulhos, Itaquaquecetuba, Mogi das Cruzes, Poá, Salesópolis, Santa Isabel, Suzano, Diadema, Mauá, Ribeirão Pires, Rio Grande da Serra, Santo André, São Bernardo do Campo, São Caetano do Sul e São Paulo.
+________________________________________
+🔹 Linha Skill
+✅ 4. Qual é a área de utilização do plano Skill SE4?
+Resposta:
+O plano SE4 pode ser utilizado nas seguintes cidades:
+São Paulo, Arujá, Biritiba-Mirim, Ferraz de Vasconcelos, Guararema, Guarulhos, Itaquaquecetuba, Mogi das Cruzes, Poá, Salesópolis, Santa Isabel, Suzano, Diadema, Mauá, Ribeirão Pires, Rio Grande da Serra, Santo André, São Bernardo do Campo e São Caetano do Sul.
+________________________________________
+✅ 5. Quais planos Skill possuem área de utilização nacional?
+Resposta:
+Os planos SMAX, SE3, SC2, SC2ME, SC1 e SC1ME possuem utilização nacional.
+________________________________________
+🔹 Linha Corporate
+✅ 6. A Linha Corporate permite utilização nacional?
+Resposta:
+Sim. Os planos C16, C16ME e C17 possuem área de utilização nacional.
+________________________________________
+🔹 Linha Premium
+✅ 7. Os planos Premium têm utilização nacional?
+Resposta:
+Sim. Os planos C19, C19ME, C20, C21, C22 e C23 possuem utilização em todo o território nacional.
+________________________________________
+🔹 Plano Hospitalar
+✅ 8. Qual a área de utilização dos planos Hospitalares?
+Resposta:
+Os planos C10, C10ME, C11, C12 e C13 possuem utilização nacional, conforme produto contratado.
+________________________________________
+✅ 9. Posso vender um plano nacional para empresa de qualquer cidade?
+Resposta:
+Sim. Desde que o plano contratado tenha área de utilização nacional, não há restrição de uso por região.
+________________________________________
+✅ 10. A área de utilização interfere na rede credenciada?
+Resposta:
+Sim. A rede disponível ao beneficiário respeita a área de utilização definida no plano contratado.
+
+🤖 Chatbot Omint – Área de Comercialização
+•	________________________________________
+•	✅ 1. Como funciona a área de comercialização dos planos Omint?
+•	Resposta:
+A área de comercialização é definida de acordo com o plano contratado e o CNPJ da empresa.
+•	________________________________________
+•	🔹 Linha Kipp
+•	✅ 2. Quais cidades são aceitas na Linha Kipp?
+•	Resposta:
+A Linha Kipp pode ser comercializada para CNPJs localizados em:
+Arujá, Biritiba-Mirim, Ferraz de Vasconcelos, Guararema, Guarulhos, Itaquaquecetuba, Mogi das Cruzes, Poá, Salesópolis, Santa Isabel, Suzano, Diadema, Mauá, Ribeirão Pires, Rio Grande da Serra, Santo André, São Bernardo do Campo, São Caetano do Sul e São Paulo.
+•	________________________________________
+•	🔹 Linha Skill
+•	✅ 3. Qual a área de comercialização da Linha Skill – SE4?
+•	Resposta:
+O plano SE4 é comercializado para CNPJs em:
+São Paulo, Arujá, Biritiba-Mirim, Ferraz de Vasconcelos, Guararema, Guarulhos, Itaquaquecetuba, Mogi das Cruzes, Poá, Salesópolis, Santa Isabel, Suzano, Diadema, Mauá, Ribeirão Pires, Rio Grande da Serra, Santo André, São Bernardo do Campo e São Caetano do Sul.
+•	________________________________________
+•	✅ 4. Quais produtos da Linha Skill têm cobertura nacional?
+•	Resposta:
+Os planos SMAX, SE3, SC2, SC2ME, SC1 e SC1ME possuem área de comercialização nacional.
+•	________________________________________
+•	🔹 Linha Corporate
+•	✅ 5. A Linha Corporate tem cobertura nacional?
+•	Resposta:
+Sim. Os planos C16, C16ME e C17 possuem comercialização nacional.
+•	________________________________________
+•	🔹 Linha Premium
+•	✅ 6. Quais planos Premium têm área de comercialização nacional?
+•	Resposta:
+Os planos C19, C19ME, C20, C21, C22 e C23 possuem comercialização nacional.
+•	________________________________________
+•	🔹 Plano Hospitalar
+•	✅ 7. Os planos hospitalares têm cobertura nacional?
+•	Resposta:
+Sim. Os planos C10, C10ME, C11, C12 e C13 têm área de comercialização nacional.
+•	________________________________________
+•	📌 Condição Especial – CNPJ Matriz RJ ou MG
+•	________________________________________
+•	✅ 8. Existe condição especial para empresas com Matriz no RJ ou MG?
+•	Resposta:
+Sim. Existe condição especial de área de comercialização, mediante análise.
+•	________________________________________
+•	✅ 9. Quais são os critérios da condição especial RJ/MG?
+•	Resposta:
+É necessário:
+•	CNPJ matriz no RJ ou MG
+•	Mínimo de 80% da massa no respectivo estado
+•	Empresa constituída há pelo menos 6 meses
+•	________________________________________
+•	✅ 10. Essa condição especial é automática?
+•	Resposta:
+Não. A condição especial está sujeita à análise e aprovação da Omint.
+•	erra, Santo André, São Bernardo do Campo e São Caetano do Sul;
+SMAX, SE3, SC2, SC2ME, SC1 e SC1ME - nacional
+Linha Corporate
+C16, C16ME E C17 - nacional
+Linha Premium
+C19, C19 ME, C20, C21, C22 e C23 - nacional
+Hospitalar
+C10, C10ME, C11, C12 e C13 - nacional
+Chatbot Omint – Carências
+________________________________________
+✅ 1. Como funciona a análise de carências na Omint?
+Resposta:
+As carências são definidas após análise do Contrato de Adesão, conforme o perfil da empresa e o histórico dos beneficiários.
+________________________________________
+✅ 2. A Omint aceita aproveitamento de carências?
+Resposta:
+Sim. O aproveitamento é possível para beneficiários que estejam migrando de operadoras compatíveis, mediante análise.
+________________________________________
+✅ 3. Quais são os critérios para aproveitamento de carências?
+Resposta:
+É necessário:
+•	Ter mínimo de 12 meses ininterruptos no plano anterior
+•	Último pagamento realizado há no máximo 60 dias
+•	Plano anterior compatível com o produto Omint contratado
+________________________________________
+✅ 4. Quais operadoras são consideradas congêneres?
+Resposta:
+São analisadas operadoras como:
+Allianz, Bradesco, BUPA, Care Plus, Lincx, One Health, Unimed Seguros, Sompo, SulAmérica e Porto.
+________________________________________
+✅ 5. O que são planos compatíveis para Corporate, Integral e Premium?
+Resposta:
+Devem ser planos dessas operadoras com:
+•	Mesmo nível de reembolso
+•	Acomodação em apartamento
+•	Rede com Einstein, Sírio-Libanês e Fleury
+•	Até 9 vidas, a partir de 10 vidas analisamos conforme congênere
+
+________________________________________
+✅ 6. O que é considerado plano compatível para o produto Skill?
+Resposta:
+Plano com:
+•	Mesmo nível de reembolso
+•	Acomodação apartamento
+•	Rede com Hospitais São Luiz, Oswaldo Cruz e 9 de Julho
+________________________________________
+✅ 7. Empresas com 30 vidas têm carência?
+Resposta:
+Não. A partir de 30 vidas, a Omint oferece isenção total de carências.
+________________________________________
+✅ 8. E empresas com menos de 30 vidas?
+Resposta:
+Para grupos com menos de 30 vidas, aplicam-se as carências conforme os prazos previstos em contrato.
+________________________________________
+✅ 9. A Omint pode reduzir carências para grupos menores?
+Resposta:
+Sim. A Omint pode avaliar redução de carências, mediante análise das declarações de saúde.
+________________________________________
+✅ 10. Quais são os critérios para análise de redução de carência?
+Resposta:
+•	ME: até 50 anos
+•	PME: até 58 anos à 69 anos
+A análise depende da composição do grupo e perfil de saúde.
+________________________________________
+🦷 Carências – Serviços Odontológicos
+(Exclusivo para Premium Estilo e Saúde Integral)
+________________________________________
+✅ 11. Qual a carência para emergências odontológicas?
+Resposta:
+24 horas.
+________________________________________
+✅ 12. Qual a carência para consultas e exames odontológicos?
+Resposta:
+30 dias.
+________________________________________
+✅ 13. Qual a carência para tratamentos restauradores e endodontia?
+Resposta:
+•	Dentística, endodontia, periodontia e cirurgia oral: 90 dias.
+________________________________________
+✅ 14. Qual a carência para prótese e ortodontia?
+Resposta:
+•	Prótese dentária: 180 dias
+•	Ortodontia e ortopedia funcional: 180 dias
+________________________________________
+🏥 Carências – Serviços Médicos
+________________________________________
+✅ 15. Qual a carência para emergências médicas?
+Resposta:
+24 horas, independentemente do tamanho do grupo.
+________________________________________
+✅ 16. Qual a carência para consultas e exames?
+Resposta:
+•	1 a 9 vidas: 30 dias
+•	10 a 29 vidas: 24 horas
+________________________________________
+✅ 17. Qual a carência para internações?
+Resposta:
+•	1 a 9 vidas: 180 dias
+•	10 a 29 vidas: 90 dias
+________________________________________
+✅ 18. Qual a carência para exames de alta complexidade?
+Resposta:
+•	1 a 9 vidas: 180 dias
+•	10 a 29 vidas: 60 dias
+________________________________________
+
+✅ 19. Qual a carência para parto?
+Resposta:
+O prazo de carência para parto é de 300 dias.
+________________________________________
+✅ 20. Transtornos psiquiátricos têm carência?
+Resposta:
+Sim.
+•	1 a 9 vidas: 180 dias
+•	10 a 29 vidas: 90 dias
+Inclui consultas, internações e terapias ambulatoriais.
+
+🤖 Chatbot Omint – Composição | Quem Pode Aderir
+________________________________________
+✅ 2. Quem pode ser titular no plano empresarial?
+Resposta:
+Podem ser titulares:
+•	Sócios, desde que constem no contrato social
+•	Funcionários, desde que participem do FGTS
+________________________________________
+✅ 3. Empresas familiares podem contratar o plano?
+Resposta:
+Sim. Quando os beneficiários são da mesma família (cônjuges, pais ou irmãos), é exigido:
+•	Mínimo de 6 meses de constituição
+•	Vínculo societário
+•	Idade máxima de 58 anos, 11 meses e 29 dias
+________________________________________
+✅ 4. Quem pode ser incluído como dependente legal?
+Resposta:
+Podem ser dependentes legais, sem limite de idade:
+•	Cônjuge ou companheiro(a)
+•	Filhos naturais, adotivos ou enteados
+•	Menor sob tutela do titular
+________________________________________
+✅ 5. Prestadores de serviços podem entrar no plano?
+Resposta:
+Sim, desde que:
+•	O grupo tenha a partir da 11ª vida
+•	Não ultrapassem 49% da massa total
+________________________________________
+✅ 6. Estagiários podem ser incluídos no plano?
+Resposta:
+Sim, a partir da 11ª vida, respeitando o limite de até 49% da massa.
+________________________________________
+✅ 7. Aprendizes podem aderir ao plano?
+Resposta:
+Sim. São aceitos aprendizes entre 14 e 24 anos de idade.
+________________________________________
+🔹 Regras específicas para ME (Microempresa)
+
+✅ 8. Quem pode ser titular em ME?
+Resposta:
+Somente sócios que constem no contrato social, com empresa constituída há mínimo de 6 meses.
+
+✅ 9. Prestadores de serviço são aceitos em ME?
+Resposta:
+Sim, apenas em grupos ou coligadas com 10 vidas ou mais, respeitando o limite de 49% da massa.
+
+✅ 10. Estagiários podem entrar em ME?
+Resposta:
+Sim. Não há número mínimo de vidas para aceitação de estagiários em ME.
+
+🤖 Chatbot Omint – Diferenciais | Linha Kipp
+
+✅ 1. Qual é o principal diferencial da Linha Kipp?
+Resposta:
+A Linha Kipp se destaca pelo cuidado integrado e personalizado, com foco em prevenção, acompanhamento contínuo e praticidade no atendimento.
+
+✅ 2. A Linha Kipp possui equipe de saúde dedicada?
+Resposta:
+Sim. O beneficiário conta com uma equipe multidisciplinar dedicada, incluindo médico, enfermeiro, psicólogo, nutricionista, fisioterapeuta, educador físico, fonoaudióloga e terapeuta educacional.
+
+✅ 3. O que é o plano de cuidado personalizado da Kipp?
+Resposta:
+É um acompanhamento focado na alimentação, prática de exercícios físicos e qualidade do sono, promovendo equilíbrio do corpo e da mente.
+
+✅ 4. Os exames na Linha Kipp precisam de autorização?
+Resposta:
+Na maioria dos casos, não. A Linha Kipp oferece atendimento desburocratizado, inclusive para exames de maior complexidade, como ressonância magnética.
+
+✅ 5. A Linha Kipp oferece desconto em medicamentos?
+Resposta:
+Sim. O beneficiário pode obter até 35% de desconto em medicamentos nas redes Drogasil e Droga Raia.
+
+✅ 6. O que são os Kipplaces?
+Resposta:
+São espaços exclusivos da Kipp para consultas, avaliações, coletas de exames e medicação, com mais conforto e atenção ao beneficiário.
+
+✅ 7. Como funciona o acesso aos serviços da Kipp?
+Resposta:
+O beneficiário tem acesso rápido a informações e atendimentos pelo App Minha Omint, garantindo praticidade e resolutividade.
+
+✅ 8. A Linha Kipp possui prontuário eletrônico?
+Resposta:
+Sim. O prontuário eletrônico permite que a equipe de saúde tenha acesso completo ao histórico do beneficiário, agilizando diagnósticos e tratamentos.
+
+✅ 9. Existe coparticipação na Linha Kipp?
+Resposta:
+Procedimentos solicitados pela equipe de saúde Kipp ou por especialistas indicados por ela não possuem cobrança de coparticipação, trazendo previsibilidade ao cliente.
+🤖 Chatbot Omint – Diferenciais | Linha Omint e Kipp
+
+✅ 1. As linhas Omint e Kipp oferecem orientação médica 24h?
+Resposta:
+Sim. Ambas oferecem orientação médica por telefone, 24 horas por dia, 7 dias por semana, com equipe exclusiva de diversas especialidades, pelo 0800 726 4001.
+
+✅ 2. Existe orientação médica por vídeo para crianças?
+Resposta:
+Sim. Há orientação pediátrica por vídeo, de segunda a sexta-feira, das 08h às 17h.
+
+✅ 3. O que é o programa Boa Hora?
+Resposta:
+É um programa de orientação e acompanhamento da gestante, com suporte contínuo de uma enfermeira obstetra durante toda a gravidez.
+
+✅ 4. As linhas Omint e Kipp cobrem cirurgia refrativa?
+Resposta:
+Sim. Há cobertura para cirurgia refrativa de miopia e hipermetropia, sem limite de grau.
+
+✅ 5. O plano cobre vacinas?
+Resposta:
+Sim. São cobertas todas as vacinas previstas no Calendário Nacional de Vacinação (PNI).
+
+✅ 6. Acupuntura e RPG têm limite de sessões?
+Resposta:
+Não. Acupuntura, escleroterapia e RPG possuem cobertura sem limite de sessões, conforme o plano contratado.
+
+✅ 7. Nutricionista e psicoterapia estão incluídos?
+Resposta:
+Sim. Nutricionista, psicoterapia e terapia ocupacional têm cobertura conforme o Rol da ANS.
+
+✅ 8. As linhas Omint e Kipp cobrem transplantes?
+Resposta:
+Sim. Além dos transplantes previstos no Rol da ANS, há cobertura para fígado, pâncreas, coração e pulmão, incluindo despesas com doadores vivos.
+
+✅ 9. Muitos exames precisam de autorização prévia?
+Resposta:
+Não. Aproximadamente 4 mil exames e procedimentos não exigem autorização prévia, garantindo mais agilidade no atendimento.
+
+🔹 Diferencial exclusivo – Linha Omint
+
+✅ 10. O que é a Remissão na Linha Omint?
+Resposta:
+A Remissão garante a manutenção do plano por até 12 meses, conforme regras contratuais, trazendo segurança financeira aos dependentes.
+🤖 Chatbot Omint – Diferenciais | Corporate e Premium
+
+🔹 Linhas Omint Corporate e Premium
+✅ 1. Os planos Corporate e Premium oferecem consulta domiciliar?
+Resposta:
+Sim. Em casos de necessidade, o associado pode contar com consulta médica domiciliar, disponível na cidade de São Paulo.
+
+✅ 2. Existe coleta de exames em domicílio?
+Resposta:
+Sim. Os planos Corporate e Premium oferecem coleta domiciliar pelos laboratórios Fleury, Alta, Lavoisier e Delboni.
+
+✅ 3. Os planos Corporate e Premium têm cobertura internacional?
+Resposta:
+Sim. Há atendimento internacional em viagens de até 90 dias, com cobertura de:
+•	30 mil euros para emergências médicas
+•	2 mil dólares para emergências odontológicas
+
+🔹 Linha Omint Premium
+✅ 4. A Linha Premium oferece Check-up?
+Resposta:
+Sim. O Check-up é oferecido para empresas com acima de 4 vidas (mínimo 2 titulares), para titulares a partir de 25 anos.
+
+✅ 5. Quais hospitais fazem parte do Plano C19?
+Resposta:
+O Plano C19 conta com HCor e Hospital Oswaldo Cruz.
+
+✅ 6. Quais hospitais e laboratórios fazem parte dos Planos C20 a C23?
+Resposta:
+Os planos C20 ao C23 contam com Fleury, Hospital Albert Einstein, HCor e Hospital Oswaldo Cruz.
+
+⏱ Prazo para Pagamento de Reembolso
+
+✅ 7. Qual é o prazo de reembolso da Linha Skill?
+Resposta:
+O prazo é de até 15 dias para consultas, exames simples e demais procedimentos.
+
+✅ 8. Qual é o prazo de reembolso nos planos Corporate e Premium?
+Resposta:
+•	24 horas para consultas e exames simples
+•	Até 5 dias para os demais procedimentos
+🤖 Chatbot Omint – Documentos Necessários
+✅ 1) Quais documentos da empresa (CNPJ) são obrigatórios?
+Resposta:
+•	Contrato Social + alterações ou Requerimento do Empresário (com selo/carimbo da JUCESP no verso) ou Certificado MEI ou CEI;
+•	Tempo mínimo de constituição: 6 meses;
+•	Documento com foto e assinatura do responsável (RG/CNH);
+•	Cartão CNPJ;
+•	FGTS (guia quitada + relação mais recente) — somente se houver funcionários na contratação.
+
+✅ 2) O que precisa quando o contrato é assinado por procurador?
+Resposta:
+•	Procuração registrada em cartório com “plenos poderes para administrar a empresa, firmar compromissos e assinar contratos”;
+•	RG ou CNH do procurador.
+
+✅ 3) Quais documentos do titular?
+Resposta:
+•	RG e CPF ou CNH.
+
+✅ 4) Quais documentos para recém admitidos?
+Resposta:
+•	RG e CPF;
+•	Ficha de registro do empregado ou cópia do livro de registro (página índice + página de abertura + página do registro).
+
+✅ 5) Quais documentos para cônjuge/companheira(o)?
+Resposta:
+•	RG e CPF;
+•	Certidão de casamento ou Declaração de convivência marital (modelo Omint) com firma reconhecida do titular e cônjuge/companheira(o).
+
+✅ 6) Quais documentos para filhos naturais?
+Resposta:
+•	RG, CPF e certidão de nascimento (obrigatória para menores de 18 anos e para nascidos a partir de 2010).
+
+✅ 7) Quais documentos para filhos adotivos?
+Resposta:
+•	RG, CPF, certidão de nascimento;
+•	Guarda provisória ou definitiva.
+
+✅ 8) Quais documentos para enteados?
+Resposta:
+•	RG, CPF, certidão de nascimento;
+•	Certidão de casamento dos pais.
+
+✅ 9) Quais documentos para estagiários?
+Resposta:
+•	RG e CPF;
+•	Termo de Compromisso de Estágio, com carimbo da instituição de ensino.
+
+✅ 10) Quais documentos para aprendiz?
+Resposta:
+•	RG e CPF;
+•	Carteira de Trabalho.
+
+✅ 11) Quais documentos para prestador de serviços (PJ)?
+Resposta:
+•	Contrato social da prestadora;
+•	Contrato de prestação de serviços assinado entre as partes.
+•	Cartão CNPJ
+•	Declaração de saúde
+
+✅ 12) É necessário relatório médico para alguém?
+Resposta:
+Sim. Enviar relatório médico para menores de 5 anos e maiores de 58 anos.
+🤖 Reembolso
+1) “Qual o reembolso (exemplo) de consulta no Skill?”
+Resposta: SE4/Smax/SE3 R$ 128,51 | SC2/SC2ME R$ 159,66 | SC1/SC1ME R$ 250,46.
+2) “E no Corporate, quanto reembolsa em consulta?”
+Resposta: C15/C15ME R$ 356,35 | C16/C16ME R$ 438,40 | C17 R$ 500,92.
+3) “No Premium, quais são os valores de consulta?”
+Resposta: C19/C19ME R$ 500,92 | C20 R$ 653,91 | C21 R$ 817,44 | C22 R$ 1.006,03 | C23 R$ 1.258,17.
+4) “Qual é o reembolso de diária hospitalar no plano Hospitalar?”
+Resposta: C10/C10ME R$ 1.921,40 | C11 R$ 2.406,74 | C12 R$ 2.949,16 | C13 R$ 3.697,18.
+5) “Esses valores são garantidos?”
+Resposta: São exemplos de referência para apoio comercial. O reembolso efetivo seguirá o contrato, tipo de despesa, documentos e prazos.
+6) “Qual o prazo para pagar reembolso?” (para integrar com política já enviada)
+Resposta: Skill: até 15 dias (consultas, exames simples e demais procedimentos). Corporate/Premium: 24h para consultas/exames simples e até 5 dias para demais procedimentos.
+🤖 Chatbot Omint – Formação do Grupo (ME / PME)
+✅ 1) Qual a faixa de vidas para ME e PME?
+Resposta:
+•	ME: de 01 a 29 vidas (exceto plano Hospitalar).
+•	PME: de 04 a 99 vidas.
+“Vidas” = total do grupo (titulares + dependentes).
+
+✅ 2) Qual é o mínimo de composição para ME (01–29 vidas)?
+Resposta:
+•	Mínimo: 01 titular com vínculo societário (sócio conforme contrato social).
+•	Observação: Plano Hospitalar não se aplica para ME de 01 a 29 vidas.
+
+✅ 3) Qual é o mínimo de composição para PME (04–99 vidas)?
+Resposta:
+•	Mínimo: 02 titulares com vínculo + 02 dependentes → 4 vidas.
+
+✅ 4) Dependentes contam para atingir o mínimo?
+Resposta:
+Sim. Na PME, os 02 dependentes são obrigatórios para completar as 04 vidas mínimas. Na ME, o mínimo é 1 titular societário (dependentes são opcionais para compor as vidas).
+
+✅ 5) O que vale como vínculo societário para titular?
+Resposta:
+Ser sócio que consta no contrato social da empresa.
+
+✅ 6) Posso contratar Hospitalar para ME (01–29)?
+Resposta:
+Não. ME de 01 a 29 vidas é exceto Hospitalar.
+
+✅ 7) Exemplos rápidos (para o corretor validar no ato)
+Resposta:
+•	ME válido: 1 sócio titular + (0, 1 ou mais dependentes) = ok (desde que total ≤ 29 e não Hospitalar).
+•	PME válido: 2 sócios titulares + 2 dependentes = 4 vidas (mínimo).
+•	PME inválido: 2 sócios titulares + 0 dependentes = não atinge o mínimo.
+
+💬 Versões “curtas” para WhatsApp
+•	ME (1–29): mínimo 1 titular societário. Hospitalar: não se aplica.
+•	PME (4–99): mínimo 2 titulares societários + 2 dependentes (= 4 vidas).
+•	Vidas = titulares + dependentes.
+
+🤖 Chatbot Omint – Coparticipação (base para corretores)
+✅ 1) APS tem coparticipação?
+Resposta: Não. Na Atenção Primária à Saúde (APS) há isenção de coparticipação.
+🔹 Linha Kipp (limite percentual: 30%, com teto por evento)
+2) Quais são os tetos por tipo de evento (Kipp)?
+Resposta:
+•	Consulta: R$ 100,00 (Acesso/Cuidado/Dinâmico) | R$ 100,00 (Conforto/Conforto+)
+•	Consulta em pronto-socorro: R$ 100,00 | R$ 200,00
+•	Exames de análises clínicas e demais exames: R$ 10,00 | R$ 15,00
+•	Exame de imagem: R$ 70,00 | R$ 120,00
+•	Terapia: R$ 50,00 | R$ 50,00
+•	Internação hospitalar: R$ 300,00 | R$ 300,00
+3) Quando o Kipp tem isenção de coparticipação além da APS?
+Resposta: Quando o cliente aciona a Equipe de Saúde (médico e/ou enfermeiro) para consultas, exames ou indicação de internação, não há cobrança.
+4) Como funciona a coparticipação em internação psiquiátrica?
+Resposta: A partir do 31º dia de internação, aplica-se 50% do valor da internação.
+
+🔹 Linha Omint (Skill | Corporate | Premium)
+Percentuais indicados e valores de referência por linha:
+5) Pronto-socorro (PS)
+Resposta:
+•	20%: Skill R$ 35,91 | Corporate R$ 48,80 | Premium R$ 54,24
+•	30%: Skill R$ 53,87 | Corporate R$ 73,20 | Premium R$ 81,36
+6) Consultas
+Resposta:
+•	20%: Skill R$ 24,88 | Corporate R$ 26,95 | Premium R$ 49,10
+•	30%: Skill R$ 37,28 | Corporate R$ 40,43 | Premium R$ 73,66
+7) Exames simples (Hemograma completo; eritrograma+leucograma+avaliação de plaquetas)
+Resposta:
+•	20%: Skill R$ 2,70 | Corporate R$ 4,98 | Premium R$ 9,59
+•	30%: Skill R$ 4,06 | Corporate R$ 7,47 | Premium R$ 14,39
+8) Terapias simples (sessão de psicoterapia individual)
+Resposta:
+•	20%: Skill R$ 23,08 | Corporate R$ 31,26 | Premium R$ 87,48
+•	30%: Skill R$ 34,62 | Corporate R$ 46,89 | Premium R$ 58,32
+9) Exames especiais
+Resposta (regra): 20% limitado a R$ 200,00 ou 30% limitado a R$ 200,00 (conforme produto).
+Se quiser, eu já amarro por produto/linha na sua base do bot.
+
+💬 Versões curtas
+•	APS: sem copart.
+•	Kipp (tetos | 30%): Consulta 100/100 | PS 100/200 | Análises 10/15 | Imagem 70/120 | Terapia 50/50 | Internação 300/300.
+•	Isenção extra (Kipp): se Equipe de Saúde indicar consulta/exame/internação, sem copart.
+•	Psiquiatria: do 31º dia, 50%.
+•	Omint – PS: 20% 35,91/48,80/54,24 | 30% 53,87/73,20/81,36 (Skill/Corp/Prem).
+•	Omint – Consultas: 20% 24,88/26,95/49,10 | 30% 37,28/40,43/73,66.
+•	Omint – Exames simples: 20% 2,70/4,98/9,59 | 30% 4,06/7,47/14,39.
+•	Omint – Terapias simples: 20% 23,08/31,26/87,48 | 30% 34,62/46,89/58,32.
+•	Exames especiais: 20% ou 30%, teto R$ 200 (por produto).
+🤖 Chatbot Omint – Tipo de Contratação
+✅ 1) Quais são os tipos de contratação?
+Resposta: Total ou Parcial.
+•	Total: entrada de 100% dos elegíveis conforme a regra escolhida (ex.: 100% do FGTS ou 100% do contrato social).
+•	Parcial: entrada apenas de parte dos elegíveis, conforme política do cliente (aplica-se à Livre Adesão).
+
+✅ 2) Quem escolhe a categoria do plano?
+Resposta: A escolha de categoria é livre para os titulares.
+Dependentes devem seguir a mesma categoria do titular (não podem escolher plano diferente).
+
+✅ 3) O que é Livre Adesão?
+Resposta: Modalidade sem obrigatoriedade de incluir 100% da população da empresa. Podem aderir sócios, administradores, diretores e/ou funcionários que o cliente definir.
+
+✅ 4) O que é Compulsório?
+Resposta: Para grupos a partir de 10 vidas, é obrigatória a inclusão de 100% do FGTS ou 100% do contrato social (critério definido na proposta).
+Nesta modalidade, a contratação é Total por definição.
+
+✅ 5) Em compulsório, posso contratar Parcial?
+Resposta: Não. Compulsório exige 100% do público-alvo (FGTS ou contrato social).
+
+✅ 6) Em Livre Adesão, posso contratar Total?
+Resposta: Sim. O cliente pode optar por Total (todos os elegíveis) ou Parcial (parte dos elegíveis).
+
+✅ 7) Dependentes podem ficar sem plano se o titular aderir?
+Resposta: Podem, conforme a regra de adesão da empresa. Mas, se incluídos, seguem a mesma categoria do titular.
+
+✅ 8) Exemplos rápidos (para validar no ato)
+Resposta:
+•	Compulsório (10+ vidas): Empresa com 18 vidas → obrigatório incluir 100% do FGTS ou 100% dos sócios.
+•	Livre Adesão: Empresa com 40 vidas → pode incluir apenas diretores (Parcial) ou todos os funcionários (Total).
+•	Categoria: Titular no C21 Premium → dependentes também no C21 Premium.
+
+💬 Versões “curtas” (WhatsApp)
+•	Tipos: Total (100% elegíveis) | Parcial (parte dos elegíveis).
+•	Categoria: Titular escolhe. Dependente segue o titular.
+•	Livre Adesão: sem 100% obrigatório (sócios/adm/diretores/funcionários).
+•	Compulsório (10+ vidas): 100% FGTS ou 100% contrato social.
+🤖 Chatbot Omint – Vigência / Vencimento
+✅ 1) Quando posso iniciar a vigência do contrato?
+Resposta: Em qualquer dia, desde que seja respeitado o prazo mínimo de 15 dias para concluir a implantação.
+
+✅ 2) O que acontece se a vigência for “quebrada” (≠ dia 1º)?
+Resposta: Haverá cobrança pró rata no primeiro boleto (valor proporcional aos dias de cobertura até o fim do mês) e o 1º pagamento vence 10 dias após a vigência. Os demais vencem no dia 10 de cada mês.
+
+✅ 3) E se a vigência for no dia 1º?
+Resposta: O vencimento será sempre no dia 10 de cada mês.
+
+✅ 4) Exemplos práticos (para o corretor responder no ato)
+Resposta:
+•	Vigência 18/05 → 1º boleto 28/05 (com pró rata de 18 a 31). Demais: todo dia 10.
+•	Vigência 01/06 → Vencimentos: todo dia 10 (inclui o 1º).
+
+✅ 5) O que é pró rata?
+Resposta: É a cobrança proporcional aos dias de cobertura entre a data de vigência e o último dia do mês.
+
+💬 Versões “curtas” (WhatsApp)
+•	Vigência: qualquer dia, com prazo mínimo 15 dias p/ implantar.
+•	Vigência quebrada (≠1º): 1º boleto 10 dias após + pró rata; demais dia 10.
+•	Vigência dia 01: vencimento dia 10 todo mês.
+•	Pró rata: cobrança proporcional aos dias do 1º mês.
+•	🤖 Chatbot Omint – Congêneres & Compatibilidade
+•	Regras gerais (antes de mapear)
+•	P: Quais operadoras são tratadas como congêneres?
+R: Exemplos: Allianz, Bradesco, Care Plus, Lincx/One Health, Tempo Saúde (Unibanco), Sul América e BUPA. 
+•	P: Quais pré requisitos para um plano ser compatível?
+R: (1) Acomodação em apartamento (não vale quarto coletivo) e (2) planos pré lei precisam estar adaptados há ≥12 meses. 
+•	
+•	Allianz
+•	P: Allianz Excellance é compatível com qual linha Omint?
+R: Corporate / Skill / Kipp. 
+•	P: Allianz Ampliado 10/20 compatibiliza com?
+R: SE3 / SMAX / SE4 / Kipp. 
+•	P: E os Exclusivo 10/20/30/40?
+R: Omint / Corporate / Skill / Kipp. 
+•	
+•	Amil
+•	P: Amil Rede Blue 700 é compatível com?
+R: SC2 / SC2ME / SE3 / SMAX / SE4 / Kipp. 
+•	P: Amil One 3000–6000 Black?
+R: Omint / Corporate / Skill / Kipp. 
+•	P: Amil tem laboratório Fleury credenciado?
+R: Não (observação da planilha). 
+•	
+•	Bradesco
+•	P: TNQ / TQN2 / TQN3 compatibilizam com?
+R: Skill. 
+•	P: TNP4/6/8, TNC6, YNC8, TNPX?
+R: Omint (linhas superiores). 
+•	
+•	Care Plus
+•	P: Especial I/II/III compatibilizam com?
+R: Skill / Kipp. 
+•	P: Executivo I/II?
+R: Corporate / Skill / Kipp. 
+•	P: Master / Master I?
+R: Omint / Corporate / Skill / Kipp. 
+•	
+•	NotreDame/Intermédica (NDI)
+•	P: SMART 300/400/500/ADVANCE 600/700/PREMIUM 900.1 são compatíveis?
+R: Não compatíveis (conforme a planilha; exceções pontuais como Premium 900.1 Care → SMAX/SE3/SE4 e Premium 900.1 → Skill). 
+•	
+•	Porto Saúde
+•	P: Diamante/Global/Master compatibilizam com?
+R: Omint / Corporate / Skill / Kipp. 
+•	P: Ouro / Sênior?
+R: Skill / Kipp. 
+•	P: Básico / Pleno / Especial / Superior?
+R: SE3 / SMAX / SE4 / Kipp. 
+•
+•	SulAmérica
+•	P: Prestige / Executivo / Máximo / Ômega / Platinum compatibilizam com?
+R: Omint / Corporate / Skill / Kipp. 
+•	P: Alpha / Beta / Básico / Diamante?
+R: Skill / Kipp. 
+•	P: Clássico (QP)?
+R: SE3 / SMAX / SE4 / Kipp. 
+•	Ajuste de base: retirar Exato e Básico (incl. variações QP) das compatibilidades. 
+•	
+•	CNU / Unimed Nacional (exemplos)
+•	P: CNU Absoluto é compatível com SE3/SE4?
+R: Sim  
+
+
