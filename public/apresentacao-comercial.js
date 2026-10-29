@@ -884,18 +884,20 @@ function resolverValorColuna(l, c, linhas, bloco) {
   const rotuloNorm = String(c.rotulo || '').toLowerCase();
   const ehCustoAnterior =
     c.calculo === 'custoAnterior' ||
-    (rotuloNorm.includes('custo') && (rotuloNorm.includes('anterior') || rotuloNorm.includes('ano 1') || rotuloNorm.includes('ant')));
+    c.calculo === 'despesaAnterior' ||
+    ((rotuloNorm.includes('custo') || rotuloNorm.includes('despesa')) && (rotuloNorm.includes('anterior') || rotuloNorm.includes('ano 1') || rotuloNorm.includes('ant')));
   if (ehCustoAnterior) {
-    return l.CustoAnt ?? l['Ano 1'] ?? l.CustoAnoAnterior ?? l._vAnt ?? null;
+    return l.DespesaAnt ?? l.CustoAnt ?? l['Ano 1'] ?? l.CustoAnoAnterior ?? l._vAnt ?? null;
   }
 
-  if (c.calculo === 'percentualCustoAnterior') {
+  if (c.calculo === 'percentualCustoAnterior' || c.calculo === 'percentualDespesaAnterior') {
     return l.PercTotalAnt ?? l.PercTotalAnoAnterior ?? null;
   }
 
   const ehCustoEvento =
     c.calculo === 'custoEvento' ||
-    (!ehCustoAnterior && rotuloNorm.includes('custo') && !rotuloNorm.includes('%') && (bloco?.id === 'mix-le-rc' || bloco?.fonte?.assinatura === 'mixLeRc'));
+    c.calculo === 'despesaEvento' ||
+    (!ehCustoAnterior && (rotuloNorm.includes('custo') || rotuloNorm.includes('despesa')) && !rotuloNorm.includes('%') && (bloco?.id === 'mix-le-rc' || bloco?.fonte?.assinatura === 'mixLeRc'));
 
   if (ehCustoEvento) {
     const norm = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
@@ -954,9 +956,10 @@ function resolverValorColuna(l, c, linhas, bloco) {
 
   const ehVarCusto =
     c.calculo === 'varCusto' ||
-    (rotuloNorm.includes('custo') && (rotuloNorm.includes('var') || rotuloNorm.includes('δ') || rotuloNorm.includes('dif') || rotuloNorm.includes('Δ')));
-  if (ehVarCusto && l.VarCusto !== undefined && l.VarCusto !== null) {
-    return l.VarCusto;
+    c.calculo === 'varDespesa' ||
+    ((rotuloNorm.includes('custo') || rotuloNorm.includes('despesa')) && (rotuloNorm.includes('var') || rotuloNorm.includes('δ') || rotuloNorm.includes('dif') || rotuloNorm.includes('Δ')));
+  if (ehVarCusto && (l.VarDespesa !== undefined || l.VarCusto !== undefined)) {
+    return l.VarDespesa ?? l.VarCusto;
   }
 
   const ehVarRC =
@@ -1400,40 +1403,38 @@ function resolverFonteTabela(fonte) {
 
     const resolverDadosItem = (it) => {
       const row15 = res.linhas.find((l) => it.match(normTexto(l.__eixo)));
-      const itemAnt = itensR14.find((d) => it.match(normTexto(d.Linha)) && (d.Coluna === 'Media Anterior' || d.Coluna === 'Média Anterior'));
-      const itemAtu = itensR14.find((d) => it.match(normTexto(d.Linha)) && (d.Coluna === 'Media' || d.Coluna === 'Média'));
+      const itemAnt = itensR14.find((d) => it.match(normTexto(d.Linha)) && ehColMediaAnt(d.Coluna));
+      const itemAtu = itensR14.find((d) => it.match(normTexto(d.Linha)) && ehColMediaAtu(d.Coluna));
 
       const vAnt = itemAnt ? num(itemAnt.Valor) : null;
-      const vAtu = itemAtu ? num(itemAtu.Valor) : null;
+      let vAtu = itemAtu ? num(itemAtu.Valor) : null;
       const vTot = row15 ? num(row15.Total) : null;
+
+      // Fallback seguro se não houver coluna Media explícita em R14 mas houver vTot e qtdMesesPeriodo
+      if (vAtu === null && vTot !== null && qtdMesesPeriodo > 0) {
+        vAtu = vTot / qtdMesesPeriodo;
+      }
+
+      const vAntAcumulado = vAnt !== null ? vAnt * qtdMesesPeriodo : null;
       const pCart = row15 ? num(row15['% Despesa'] ?? row15['Perc_Despesa']) : null;
       const pBench = row15 ? num(row15['% Despesa Bench'] ?? row15['Perc_Despesa_Bench']) : null;
 
-      // Resolução de Quantidade e Variação de Quantidade via R5 (apenas dados oficiais da API)
+      // Resolução de Quantidade via R5 (apenas dados oficiais da API)
       let qtd = null;
-      let varQtdPct = null;
       const kNome = normTexto(it.nome);
-      if (kNome === 'consultas') {
-        const q = itensR5.find((d) => normTexto(d.Linha).includes('consultas') && igual(d.Coluna, 'Quantidade'));
+      if (kNome.includes('consulta') && !kNome.includes('emerg')) {
+        const q = itensR5.find((d) => (normTexto(d.Linha).includes('consulta') || normTexto(d.Linha).includes('consultas')) && igual(d.Coluna, 'Quantidade'));
         if (q) qtd = num(q.Valor);
-        const difItem = itensR5.find((d) => normTexto(d.Linha).includes('consultas') && (igual(d.Coluna, 'Dif') || igual(d.Coluna, 'DIF')));
-        if (difItem) varQtdPct = num(difItem.Valor);
-      } else if (kNome === 'exames') {
-        const q = itensR5.find((d) => normTexto(d.Linha).includes('exames') && igual(d.Coluna, 'Quantidade'));
+      } else if (kNome.includes('exame')) {
+        const q = itensR5.find((d) => (normTexto(d.Linha).includes('exame') || normTexto(d.Linha).includes('exames')) && !normTexto(d.Linha).includes('consulta') && igual(d.Coluna, 'Quantidade'));
         if (q) qtd = num(q.Valor);
-        const difItem = itensR5.find((d) => normTexto(d.Linha).includes('exames') && (igual(d.Coluna, 'Dif') || igual(d.Coluna, 'DIF')));
-        if (difItem) varQtdPct = num(difItem.Valor);
       } else if (kNome.includes('terapia')) {
         const q = itensR5.find((d) => normTexto(d.Linha).includes('terapia') && igual(d.Coluna, 'Quantidade'));
         if (q) qtd = num(q.Valor);
-        const difItem = itensR5.find((d) => normTexto(d.Linha).includes('terapia') && (igual(d.Coluna, 'Dif') || igual(d.Coluna, 'DIF')));
-        if (difItem) varQtdPct = num(difItem.Valor);
       } else if (kNome.includes('emerg') || kNome.includes('urgenc') || kNome.includes('pronto')) {
         if (row15 && (num(row15.Total) > 0 || num(row15['% Despesa']) > 0 || num(row15['Perc_Despesa']) > 0)) {
           const q = itensR5.find((d) => (normTexto(d.Linha).includes('urgencia') || normTexto(d.Linha).includes('urgência') || normTexto(d.Linha).includes('pronto')) && igual(d.Coluna, 'Quantidade'));
           if (q) qtd = num(q.Valor);
-          const difItem = itensR5.find((d) => (normTexto(d.Linha).includes('urgencia') || normTexto(d.Linha).includes('urgência')) && (igual(d.Coluna, 'Dif') || igual(d.Coluna, 'DIF')));
-          if (difItem) varQtdPct = num(difItem.Valor);
         }
       }
 
@@ -1907,12 +1908,35 @@ function resolverFonteTabela(fonte) {
           varRC = num(row4.VarRC);
         } else if (row4.PercVarRC !== undefined && row4.PercVarRC !== null) {
           varRC = num(row4.PercVarRC);
+        } else if (row4.VarCustoRC !== undefined && row4.VarCustoRC !== null) {
+          varRC = num(row4.VarCustoRC);
         } else if (row4.PercRC_Anterior !== undefined && row4.PercRC_Anterior !== null && pRC !== null) {
           const rcAtual = num(pRC) || 0;
           const rcAnt = num(row4.PercRC_Anterior) || 0;
           const nAtual = (rcAtual > 0 && rcAtual <= 1.0 && !String(pRC).includes('%')) ? rcAtual * 100 : rcAtual;
           const nAnt = (rcAnt > 0 && rcAnt <= 1.0 && !String(row4.PercRC_Anterior).includes('%')) ? rcAnt * 100 : rcAnt;
           varRC = nAtual - nAnt;
+        }
+      }
+
+      // Variação na livre escolha / reembolso (VarLE)
+      let varLE = null;
+      if (row4) {
+        if (row4.VarLE !== undefined && row4.VarLE !== null) {
+          varLE = num(row4.VarLE);
+        } else if (row4.PercVarLE !== undefined && row4.PercVarLE !== null) {
+          varLE = num(row4.PercVarLE);
+        } else if (row4.VarCustoLE !== undefined && row4.VarCustoLE !== null) {
+          varLE = num(row4.VarCustoLE);
+        } else if (row4.PercLE_Anterior !== undefined && row4.PercLE_Anterior !== null && pLE !== null) {
+          const leAtual = num(pLE) || 0;
+          const leAnt = num(row4.PercLE_Anterior) || 0;
+          const nAtual = (leAtual > 0 && leAtual <= 1.0 && !String(pLE).includes('%')) ? leAtual * 100 : leAtual;
+          const nAnt = (leAnt > 0 && leAnt <= 1.0 && !String(row4.PercLE_Anterior).includes('%')) ? leAnt * 100 : leAnt;
+          varLE = nAtual - nAnt;
+        } else if (varRC !== null) {
+          // No mix de utilização (onde RC + LE = 100%), a variação de LE é o inverso simétrico de RC
+          varLE = -varRC;
         }
       }
 
@@ -1953,19 +1977,35 @@ function resolverFonteTabela(fonte) {
         QtdAnt: null,
         QuantidadeAnt: null,
         QuantidadeAnoAnterior: null,
+        'Despesa (R$)': custoMonetario,
+        Despesa: custoMonetario,
+        'Custo (R$)': custoMonetario,
         Custo: custoMonetario,
         Total: custoMonetario,
         Valor: custoMonetario,
         PercTotal: pTot,
+        '% da despesa total': pTot !== null ? brl(pTot, 2) + '%' : '—',
+        '% do custo total': pTot !== null ? brl(pTot, 2) + '%' : '—',
         PercTotalAnt: null,
         PercTotalAnoAnterior: null,
         PercBench: pBench,
+        'Benchmark*': pBench !== null ? brl(pBench, 2) + '%' : '—',
         PercRC: pRC,
+        '% Rede credenciada': pRC !== null ? brl(pRC, 2) + '%' : '—',
         PercLE: pLE,
+        '% Reembolso (LE)': pLE !== null ? brl(pLE, 2) + '%' : '—',
         VarRC: varRC,
+        PercVarRC: varRC,
+        VarCustoRC: varRC,
+        'Var. RC': varRC,
+        VarLE: varLE,
+        VarCustoLE: varLE,
+        PercVarLE: varLE,
+        'Var. LE': varLE,
         VarCusto: varCusto,
         _vAtu: valAtual,
         _vAnt: valAnt,
+        DespesaAnt: custoAntAcumulado,
         CustoAnt: custoAntAcumulado,
         'Ano 1': custoAntAcumulado,
         CustoAnoAnterior: custoAntAcumulado,
@@ -2126,7 +2166,7 @@ function resolverFonteTabela(fonte) {
       });
     }
 
-    ['Custo', 'Total', 'Valor', 'PercTotal', 'PercTotalAnt', 'PercTotalAnoAnterior', 'PercBench', 'PercRC', 'PercLE', 'VarRC', 'VarCusto', 'Quantidade', 'Qtd', 'CustoAnt', 'Ano 1', 'CustoAnoAnterior', 'QtdAnt', 'QuantidadeAnt', 'QuantidadeAnoAnterior'].forEach((s) => {
+    ['Despesa', 'Despesa (R$)', 'Custo', 'Total', 'Valor', 'PercTotal', '% da despesa total', '% do custo total', 'PercTotalAnt', 'PercTotalAnoAnterior', 'PercBench', 'Benchmark*', 'PercRC', '% Rede credenciada', 'PercLE', '% Reembolso (LE)', 'VarRC', 'VarCustoRC', 'PercVarRC', 'Var. RC', 'VarLE', 'VarCustoLE', 'PercVarLE', 'Var. LE', 'VarCusto', 'Quantidade', 'Qtd', 'DespesaAnt', 'CustoAnt', 'Ano 1', 'CustoAnoAnterior', 'QtdAnt', 'QuantidadeAnt', 'QuantidadeAnoAnterior'].forEach((s) => {
       if (!res.series.includes(s)) res.series.push(s);
     });
 
@@ -2144,21 +2184,29 @@ function resolverFonteTabela(fonte) {
       return ind !== null || bmk !== null || dif !== null || (qtd !== null && qtd > 0);
     });
 
+    // 8. Ordenação canônica estrita
     const ORDEM_IND = [
-      'Consultas',
-      'Exames',
+      'Consultas por vida/mês',
+      'Exames por vida/mês',
       'Exames por consulta',
-      'Pronto-Socorro',
-      'Atendimento de urgência',
-      'Terapias seriadas',
+      'Pronto-Socorro por vida/mês',
+      'Terapias por vida/mês',
       'Internações por 1.000 vidas/mês',
       'Diárias por 1.000 vidas/mês',
       'Índice de UTI',
       'Média de permanência'
     ];
     res.linhas.sort((a, b) => {
-      const ia = ORDEM_IND.indexOf(a.__eixo);
-      const ib = ORDEM_IND.indexOf(b.__eixo);
+      const normA = normTexto(a.__eixo);
+      const normB = normTexto(b.__eixo);
+      const ia = ORDEM_IND.findIndex((o) => {
+        const normO = normTexto(o);
+        return normA === normO || normA.includes(normO) || normO.includes(normA);
+      });
+      const ib = ORDEM_IND.findIndex((o) => {
+        const normO = normTexto(o);
+        return normB === normO || normB.includes(normO) || normO.includes(normB);
+      });
       return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
     });
   }
@@ -2718,7 +2766,7 @@ const UI = {
             'Despesas odontológicas': 'Procedimentos odontológicos',
             'Odontologia': 'Procedimentos odontológicos'
           };
-          if (m[cel.texto]) tit = ` title="${m[cel.texto]}" style="cursor:help; border-bottom:1px dotted #ccc;"`;
+          if (m[cel.texto]) tit = ` title="${m[cel.texto]}"`;
         }
         return `<td${tit} class="${[colunas[j]?.numerica ? 'num' : '', cel.classe || ''].filter(Boolean).join(' ')}">${cel.html !== undefined ? cel.html : esc(cel.texto)}</td>`;
       })
@@ -3393,21 +3441,6 @@ function colunasEfetivas(bloco, dados) {
     if (!temCopay) {
       cols = cols.filter((c) => !c.somenteComCopay);
     }
-    // Se for mix-le-rc, oculta a coluna Δ Utilização RC se não houver dados válidos no período
-    if (bloco.id === 'mix-le-rc' && dados.linhas && dados.linhas.length) {
-      cols = cols.filter((c) => {
-        const rotNorm = normTexto(c.rotulo);
-        const ehVarRC = rotNorm.includes('utiliz') && rotNorm.includes('rc');
-        if (ehVarRC) {
-          const temAlgumDado = dados.linhas.some((l) => {
-            const v = l.VarRC ?? l.PercVarRC;
-            return v !== null && v !== undefined && v !== '' && v !== '—';
-          });
-          return temAlgumDado;
-        }
-        return true;
-      });
-    }
     // Se for rede-livre-escolha-mensal, elimina duplicidade visual:
     // Se existirem produtos discriminados (Premium, Corporate, Skill) com valores válidos na base,
     // oculta a coluna mãe consolidada "Livre escolha" para não duplicar o reembolso na leitura das colunas;
@@ -3834,6 +3867,18 @@ function normalizarChaveProduto(prod) {
  * Gera o componente visual de hover sobre o produto (gatilho com badge + popover de planos envolvidos).
  */
 function gerarHtmlHoverProduto(nomeProduto, planos, isUltimaLinha = false) {
+  const totVidasPl = (planos || []).reduce((acc, p) => acc + (num(p.vidas) || 0), 0);
+  const totRecPl = (planos || []).reduce((acc, p) => acc + (num(p.rec) || 0), 0);
+  const totDespPl = (planos || []).reduce((acc, p) => acc + (num(p.desp) || 0), 0);
+  const totSinPl = totRecPl > 0 ? (totDespPl / totRecPl) * 100 : (totDespPl > 0 ? null : 0);
+  const totSinPlTxt = totSinPl !== null ? formatar(totSinPl, 'percentual') : '—';
+  const totSinPlClass = totSinPl !== null ? (totSinPl > 75 ? 'valor-critico' : 'valor-positivo') : '';
+
+  const totVidasRodape = (planos && planos.totalVidasReal && planos.totalVidasReal > 0)
+    ? planos.totalVidasReal
+    : (totVidasPl > 0 ? totVidasPl : 0);
+  const totVidasRodapeTxt = totVidasRodape > 0 ? formatar(totVidasRodape, 'inteiro') : '—';
+
   const popoverContent = (planos && planos.length) ? `
     <div class="popover-planos-detalhe${isUltimaLinha ? ' popover-cima' : ''}">
       <div class="popover-header">
@@ -3865,6 +3910,16 @@ function gerarHtmlHoverProduto(nomeProduto, planos, isUltimaLinha = false) {
             </tr>`;
           }).join('')}
         </tbody>
+        ${planos.length > 1 ? `
+        <tfoot>
+          <tr style="border-top: 1px solid #CBD5E1; font-weight: 600;">
+            <td>Total</td>
+            <td class="num">${totVidasRodapeTxt}</td>
+            <td class="num">${formatar(totRecPl, 'moeda')}</td>
+            <td class="num">${formatar(totDespPl, 'moeda')}</td>
+            <td class="num ${totSinPlClass}">${totSinPlTxt}</td>
+          </tr>
+        </tfoot>` : ''}
       </table>
     </div>` : `
     <div class="popover-planos-detalhe${isUltimaLinha ? ' popover-cima' : ''}">
@@ -3885,6 +3940,60 @@ function gerarHtmlHoverProduto(nomeProduto, planos, isUltimaLinha = false) {
     <div class="produto-hover-wrapper">
       <span class="produto-nome" style="font-weight: 600;">${esc(nomeProduto)}</span>
       <span class="badge-planos-trigger" title="${esc(titPlanos)}">ℹ</span>
+      ${popoverContent}
+    </div>`;
+}
+
+/**
+ * Gera o componente visual de hover consolidado para produtos sem abertura por subplano (Slide 22).
+ * Exibe os totais consolidados de Vidas, Receita, Despesa e Sinistralidade sem fingir que é plano.
+ */
+function gerarHtmlHoverConsolidado(nomeProduto, dadosConsolidados, isUltimaLinha = false) {
+  const vidas = num(dadosConsolidados?.vidas) || 0;
+  const rec = num(dadosConsolidados?.rec) || 0;
+  const desp = num(dadosConsolidados?.desp) || 0;
+  let sin = dadosConsolidados?.sin;
+  if (sin === undefined || sin === null) {
+    sin = rec > 0 ? (desp / rec) * 100 : (desp > 0 ? null : 0);
+  }
+  const sinTxt = sin !== null ? formatar(sin, 'percentual') : '—';
+  const sinClass = sin !== null ? (sin > 75 ? 'valor-critico' : 'valor-positivo') : '';
+  const vidasTxt = vidas > 0 ? formatar(vidas, 'inteiro') : '—';
+
+  const popoverContent = `
+    <div class="popover-planos-detalhe${isUltimaLinha ? ' popover-cima' : ''}">
+      <div class="popover-header">
+        <strong>Visão consolidada · ${esc(nomeProduto)}</strong>
+      </div>
+      <table class="popover-table">
+        <thead>
+          <tr>
+            <th class="num" style="text-align: left;">Produto</th>
+            <th class="num">Vidas</th>
+            <th class="num">Receita</th>
+            <th class="num">Despesa</th>
+            <th class="num">Sinistralidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>${esc(nomeProduto)}</strong></td>
+            <td class="num">${vidasTxt}</td>
+            <td class="num">${formatar(rec, 'moeda')}</td>
+            <td class="num">${formatar(desp, 'moeda')}</td>
+            <td class="num ${sinClass}">${sinTxt}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin: 8px 0 2px 0; font-size: 11px; color: #64748B; font-style: italic; line-height: 1.3;">
+        Detalhamento individual por plano não disponível para este produto no período.
+      </p>
+    </div>`;
+
+  return `
+    <div class="produto-hover-wrapper">
+      <span class="produto-nome" style="font-weight: 600;">${esc(nomeProduto)}</span>
+      <span class="badge-planos-trigger" title="Visão consolidada (${esc(nomeProduto)})">ℹ</span>
       ${popoverContent}
     </div>`;
 }
@@ -4024,7 +4133,7 @@ function tabelaResultadoPorProduto(bloco) {
 
       const plMed = isMed ? (planosPorProd.get(prodKey) || []) : [];
       const plOdo = !isMed ? (planosPorProd.get('ODONTO_' + prodKey) || (!temOdontoEsp && prodKey === 'PREMIUM' ? (planosPorProd.get('ODONTOLOGIA') || []) : [])) : [];
-      const pl = isMed ? plMed : plOdo;
+      let pl = isMed ? plMed : plOdo;
 
       if (rec === 0 && desp === 0 && pl.length > 0) {
         rec = pl.reduce((acc, p) => acc + p.rec, 0);
@@ -4039,14 +4148,17 @@ function tabelaResultadoPorProduto(bloco) {
         }
       }
 
+      // No Slide 20, produtos sem abertura de planos no R2 não geram planos sintéticos;
+      // a linha da tabela já exibe os totais consolidados e o nome do produto é exibido limpo sem hover.
+
       let copayProd = 0;
       if (isMed && despMedicaTotal > 0 && copayTotal > 0 && desp > 0) {
         copayProd = copayTotal * (desp / despMedicaTotal);
       }
       const despCheia = desp + copayProd;
       const impactoCopay = despCheia > 0 ? (copayProd / despCheia) * 100 : 0;
-      const sinLiquida = rec > 0 ? (desp / rec) * 100 : 0;
-      const sinBruta = rec > 0 ? (despCheia / rec) * 100 : 0;
+      const sinLiquida = rec > 0 ? (desp / rec) * 100 : (desp > 0 ? null : 0);
+      const sinBruta = rec > 0 ? (despCheia / rec) * 100 : (despCheia > 0 ? null : 0);
 
       return {
         prodKey,
@@ -4077,8 +4189,8 @@ function tabelaResultadoPorProduto(bloco) {
     const totCopayGrp = isMed ? copayTotal : 0;
     const totDespCheiaGrp = totDespGrp + totCopayGrp;
     const totImpactoGrp = totDespCheiaGrp > 0 ? (totCopayGrp / totDespCheiaGrp) * 100 : 0;
-    const totSinLiquidaGrp = totRecGrp > 0 ? (totDespGrp / totRecGrp) * 100 : 0;
-    const totSinBrutaGrp = totRecGrp > 0 ? (totDespCheiaGrp / totRecGrp) * 100 : 0;
+    const totSinLiquidaGrp = totRecGrp > 0 ? (totDespGrp / totRecGrp) * 100 : (totDespGrp > 0 ? null : 0);
+    const totSinBrutaGrp = totRecGrp > 0 ? (totDespCheiaGrp / totRecGrp) * 100 : (totDespCheiaGrp > 0 ? null : 0);
 
     // Filtra apenas produtos com valores efetivos
     const produtosVisiveis = produtosCalculados.filter((p) => {
@@ -4132,9 +4244,10 @@ function tabelaResultadoPorProduto(bloco) {
     // 2. Linhas apenas dos Produtos com valores reais (plano-item)
     produtosVisiveis.forEach((p, idx) => {
       const isUltimaLinha = (grpIdx === gruposConfig.length - 1 && idx === produtosVisiveis.length - 1) || celulasLinhas.length >= 3;
+      const temPlanosReais = p.planos && p.planos.length > 0 && !p.planos.every((pl) => pl.sintetico);
       const celProduto = {
         texto: p.nomeExibicao,
-        html: gerarHtmlHoverProduto(p.nomeExibicao, p.planos, isUltimaLinha),
+        html: temPlanosReais ? gerarHtmlHoverProduto(p.nomeExibicao, p.planos, isUltimaLinha) : undefined,
         classe: 'col-produto plano-item',
       };
 
@@ -4251,8 +4364,6 @@ function tabelaDespesaProdutoMensal(bloco) {
 
   const idsR1 = idsDaFonte({ assinatura: 'produtoResumo', todos: true });
   const itensR1 = idsR1.flatMap((id) => itensDoRelatorio(id));
-
-  const planosPorProd = agruparPlanosPorProduto();
 
   const ehMedicina = (g) => {
     const s = normTexto(g);
@@ -4399,9 +4510,15 @@ function tabelaDespesaProdutoMensal(bloco) {
     // 2. Linhas dos Produtos com valores reais (Corporate, Skill, etc.)
     grp.produtos.forEach((p, idx) => {
       const isUltimaLinha = (grpIdx === grupos.length - 1 && idx === grp.produtos.length - 1) || celulasLinhas.length >= 3;
+      let htmlHover = undefined;
+      if (p.planos && p.planos.length > 0 && !p.planos.every((pl) => pl.sintetico)) {
+        htmlHover = gerarHtmlHoverProduto(p.nomeExibicao, p.planos, isUltimaLinha);
+      } else if (p.dadosConsolidados) {
+        htmlHover = gerarHtmlHoverConsolidado(p.nomeExibicao, p.dadosConsolidados, isUltimaLinha);
+      }
       const celProduto = {
         texto: p.nomeExibicao,
-        html: gerarHtmlHoverProduto(p.nomeExibicao, p.planos, isUltimaLinha),
+        html: htmlHover,
         classe: 'col-produto plano-item',
       };
       const rowProd = [
@@ -4631,13 +4748,13 @@ function resolverNomeCanonicoPrestador(nomeBruto, gruposCustom = null, isLaborat
     for (const a of g.aliases) {
       const na = normTexto(a);
       if (nBruto.includes(na) || nLimpo.includes(na)) {
-        return g.nomeGrupo;
+        return formatarNomeProprio(g.nomeGrupo);
       }
     }
   }
 
-  // Fallback: se não estiver no dicionário, usa o nome limpo
-  return limpo || nomeBruto;
+  // Fallback: se não estiver no dicionário, usa o nome limpo formatado em Title Case
+  return formatarNomeProprio(limpo || nomeBruto);
 }
 
 function extrairIdentificadorUnidade(nomeOriginal, nomeGrupo) {
@@ -4671,11 +4788,11 @@ function extrairIdentificadorUnidade(nomeOriginal, nomeGrupo) {
   if (partes.length > 1) {
     const suf = partes[partes.length - 1].trim();
     if (suf && suf.length > 1 && !/^(sp|rj|mg|sa|s\/a|ltda)$/i.test(suf)) {
-      return suf;
+      return formatarNomeProprio(suf);
     }
   }
   const limpo = limparNomePrestador(s);
-  return limpo !== nomeGrupo ? limpo : 'Unidade Principal';
+  return limpo !== nomeGrupo ? formatarNomeProprio(limpo) : 'Unidade Principal';
 }
 
 function tabelaTopPrestadores(bloco) {
@@ -4775,10 +4892,10 @@ function tabelaTopPrestadores(bloco) {
       const g = mapaGrupos.get(nomeCanonico);
       const ehMultiplo = g && g.unidades.length > 1;
 
-      let nomeExibicao = nomeCanonico;
+      let nomeExibicao = formatarNomeProprio(nomeCanonico);
       if (ehMultiplo) {
         const idUnid = extrairIdentificadorUnidade(nomeOriginal, nomeCanonico);
-        nomeExibicao = idUnid ? `${nomeCanonico} · ${idUnid}` : nomeOriginal;
+        nomeExibicao = idUnid ? `${nomeCanonico} · ${formatarNomeProprio(idUnid)}` : formatarNomeProprio(nomeOriginal);
       }
 
       return {
@@ -4823,7 +4940,7 @@ function tabelaTopPrestadores(bloco) {
 
   const celulas = topLinhas.map((g) => {
     const row = [
-      { texto: g.nome },
+      { texto: formatarNomeProprio(g.nome) },
       { texto: formatar(g.despesaTotal, 'moeda') },
       { texto: formatar(g.pctDespesa, 'percentual') },
     ];
@@ -4952,14 +5069,15 @@ function tabelaDeBloco(bloco) {
       let fmt = (isLinhaVar && (String(bruto).includes('%') || bruto === '—')) ? 'texto' : c.formato;
       if (bloco.id === 'indicadores-benchmark') {
         if (isUti) {
-          if (/empresa|carteira|benchmark|frequencia|frequência/i.test(c.rotulo)) {
-            fmt = 'percentual';
-          } else if (/varia[çc][ãa]o|dif/i.test(c.rotulo)) {
+          if (/varia[çc][ãa]o|dif/i.test(c.rotulo)) {
             fmt = 'pontos';
+          } else if (/empresa|carteira|benchmark|frequencia|frequência/i.test(c.rotulo)) {
+            fmt = 'percentual';
           }
-        } else if (/quantidade|qtd/i.test(c.rotulo) && String(l.__eixo ?? '').toLowerCase().includes('exame')) {
-          fmt = 'decimal';
         }
+      }
+      if (fmt === 'texto' && bruto && typeof bruto === 'string' && (normTexto(c.rotulo).includes('prestador') || normTexto(c.rotulo).includes('beneficiario') || normTexto(c.rotulo).includes('usuario'))) {
+        bruto = formatarNomeProprio(bruto);
       }
       const n = num(bruto);
       const estado = c.alerta && n !== null ? estadoPorAlerta(n * (c.escala || 1), c.alerta) : 'neutro';
@@ -5071,7 +5189,14 @@ function tabelaDeBloco(bloco) {
   if (bloco.id === 'checkup-pendentes') {
     const idsR22 = idsDaFonte({ assinatura: 'checkupPendentes' });
     const itensR22 = idsR22.length ? idsR22.flatMap(itensDoRelatorio) : itensDoRelatorio(22);
-    const planosNaoPremium = [...new Set(itensR22.filter((d) => igual(d.Coluna, 'Plano') && !/premium/i.test(String(d.Valor || ''))).map((d) => d.Valor))];
+    const planosNaoPremium = [
+      ...new Set(
+        itensR22
+          .filter((d) => igual(d.Coluna, 'Plano'))
+          .map((d) => String(d.Valor || '').trim())
+          .filter((p) => p && typeof identificarProdutoDoPlano === 'function' && identificarProdutoDoPlano(p) !== 'PREMIUM')
+      )
+    ];
     if (planosNaoPremium.length > 0) {
       const msgLib = `Liberalidade contratual identificada (vouchers emitidos no${planosNaoPremium.length > 1 ? 's planos ' : ' plano '}${planosNaoPremium.join(', ')}).`;
       notaFinal = notaFinal ? `${notaFinal} ${msgLib}` : msgLib;
@@ -5083,22 +5208,20 @@ function tabelaDeBloco(bloco) {
 
   let superHeadersBloco = bloco.superHeaders ? JSON.parse(JSON.stringify(bloco.superHeaders)) : null;
   if (bloco.id === 'evento-benchmark' && Array.isArray(superHeadersBloco)) {
-    const shComp = superHeadersBloco.find((sh) => /período atual|periodo atual/i.test(sh.titulo));
-    if (shComp) {
       try {
         const { rotAnt, rotAtu } = typeof obterPeriodosFormatadosAnalise === 'function' ? obterPeriodosFormatadosAnalise() : {};
-        if (rotAtu && rotAnt) {
-          shComp.titulo = `PERÍODO ATUAL (${rotAtu}) × ANTERIOR (${rotAnt})`;
+      const shAnt = superHeadersBloco.find((sh) => /período anterior|periodo anterior/i.test(sh.titulo));
+      if (shAnt && rotAnt) {
+        shAnt.titulo = `PERÍODO ANTERIOR (${rotAnt})`;
+      }
+      const shAtu = superHeadersBloco.find((sh) => /período atual|periodo atual/i.test(sh.titulo));
+      if (shAtu && rotAtu) {
+        shAtu.titulo = `PERÍODO ATUAL (${rotAtu})`;
         }
       } catch (_) {}
-    }
   } else if (bloco.id === 'mix-le-rc' && Array.isArray(superHeadersBloco)) {
     try {
-      const { rotAnt, rotAtu } = typeof obterPeriodosFormatadosAnalise === 'function' ? obterPeriodosFormatadosAnalise() : {};
-      if (rotAnt) {
-        const shAnt = superHeadersBloco.find((sh) => /período anterior|periodo anterior/i.test(sh.titulo));
-        if (shAnt) shAnt.titulo = `PERÍODO ANTERIOR (${rotAnt})`;
-      }
+      const { rotAtu } = typeof obterPeriodosFormatadosAnalise === 'function' ? obterPeriodosFormatadosAnalise() : {};
       if (rotAtu) {
         const shAtu = superHeadersBloco.find((sh) => /período atual|periodo atual/i.test(sh.titulo));
         if (shAtu) shAtu.titulo = `PERÍODO ATUAL (${rotAtu})`;
@@ -5108,9 +5231,9 @@ function tabelaDeBloco(bloco) {
     const totalColunasEsperadas = superHeadersBloco.reduce((acc, sh) => acc + (sh.colspan || 1), 0);
     if (totalColunasEsperadas !== colunas.length) {
       const diff = totalColunasEsperadas - colunas.length;
-      const shAcesso = superHeadersBloco.find((sh) => /acesso/i.test(sh.titulo));
-      if (shAcesso && (shAcesso.colspan - diff) > 0) {
-        shAcesso.colspan -= diff;
+      const shVar = superHeadersBloco.find((sh) => /acesso|benchmark|compar|varia/i.test(sh.titulo));
+      if (shVar && (shVar.colspan - diff) > 0) {
+        shVar.colspan -= diff;
       }
     }
   } else if (bloco.id === 'rede-livre-escolha-mensal' && Array.isArray(superHeadersBloco)) {
@@ -5311,7 +5434,24 @@ function extrairMetricasFicha(ctx, bloco) {
   };
 }
 
+function chaveStorageCorretora() {
+  const cd = (typeof parametros === 'function' ? parametros().cdEmpresa : '') || DADOS?._meta?.cdEmpresa || DADOS?.relatorio?.Cod_Empresa || 'default';
+  return `omt_corretora_${cd}`;
+}
+
+function aplicarOverrideCorretoraSalva(ctxAlvo) {
+  try {
+    const chave = chaveStorageCorretora();
+    const salvo = localStorage.getItem(chave);
+    if (salvo && salvo.trim()) {
+      if (DADOS?.relatorio) DADOS.relatorio.Agente = salvo.trim();
+      if (ctxAlvo?.relatorio) ctxAlvo.relatorio.Agente = salvo.trim();
+    }
+  } catch (_) {}
+}
+
 function renderFicha(bloco, ctx) {
+  aplicarOverrideCorretoraSalva(ctx);
   const odontoCtx = detectarOdontoContexto(ctx);
   const metricas = extrairMetricasFicha(ctx, bloco);
 
@@ -5606,11 +5746,14 @@ function renderFicha(bloco, ctx) {
     const ehCadastral = rotuloLower.includes('empresa') || rotuloLower.includes('corretora') || rotuloLower.includes('início') || rotuloLower.includes('inicio') || ehPeriodo;
     const campoNome = ehPeriodo ? 'periodo' : rotuloLower.includes('empresa') ? 'empresa' : rotuloLower.includes('corretora') ? 'corretora' : 'inicio';
 
+    const ehCorretora = campoNome === 'corretora';
+    const podeEditarCorretora = ehCorretora && !LEITURA && !document.body.classList.contains('imprimindo');
+
     return `
     <div class="card card-ficha" data-card="padrao" data-campo="${campoNome}" title="${esc(c.valor)}">
       ${c.icone ? `<div class="card-icon">${esc(c.icone)}</div>` : ''}
       <h3 class="card-ficha-rotulo">${esc(c.rotulo)}</h3>
-      <p class="card-ficha-valor ${ehCadastral ? 'card-ficha-valor-cadastral' : ''}" ${ehPeriodo ? 'data-tipo="periodo"' : ''}>${esc(c.valor)}</p>
+      <p class="card-ficha-valor ${ehCadastral ? 'card-ficha-valor-cadastral' : ''}" ${ehPeriodo ? 'data-tipo="periodo"' : ''} ${podeEditarCorretora ? 'contenteditable="true" spellcheck="false" data-campo-editavel="corretora"' : ''}>${esc(c.valor)}</p>
     </div>`;
   }).join('');
 
@@ -5705,6 +5848,107 @@ function gerarBotaoExportarVouchers() {
   return `<div class="acoes-tabela-slide"><button type="button" class="btn-exportar-csv" onclick="exportarVouchersCheckupCSV()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg><span>Exportar Lista (Excel / CSV)</span></button></div>`;
 }
 */
+
+/**
+ * Tabela Mensal de Check-up com Emitido, Realizado e Custo em LINHA e Mês em COLUNA (Slide Benefício de check-up):
+ * - Baseada na estrutura do Slide 22 (Despesa mensal por produto)
+ * - Linhas: Emitidos, Realizados, Custo
+ * - Colunas: Indicador, Meses cronológicos, Acumulado
+ */
+function gerarTabelaCheckupMensalEmLinha() {
+  const idsR16 = idsDaFonte({ assinatura: 'checkup' });
+  let itensR16 = idsR16.flatMap(itensDoRelatorio);
+  if (!itensR16.length) itensR16 = itensDoRelatorio(16);
+  if (!itensR16.length) return null;
+
+  const itensOrd1 = itensR16.filter((d) => Number(d.Ordem) === 1 || d.Ordem == null);
+  const baseItens = itensOrd1.length ? itensOrd1 : itensR16;
+
+  const mesesSet = new Set();
+  baseItens.forEach((d) => {
+    if (d.Coluna && chavePeriodo(d.Coluna) !== null) {
+      mesesSet.add(d.Coluna);
+    }
+  });
+  const meses = [...mesesSet].sort((a, b) => (chavePeriodo(a) || 0) - (chavePeriodo(b) || 0));
+  if (!meses.length) return null;
+
+  const colAcum = baseItens.find((d) => /^(acumulado|total)$/i.test(String(d.Coluna || '').trim()))?.Coluna || 'Acumulado';
+
+  const getVal = (filtroLinha, col) => {
+    const it = baseItens.find((d) => filtroLinha(normTexto(d.Linha)) && (igual(d.Coluna, col) || (chavePeriodo(col) !== null && chavePeriodo(d.Coluna) === chavePeriodo(col))));
+    return it ? num(it.Valor) : null;
+  };
+
+  const colunas = [
+    { rotulo: 'Indicador', numerica: false },
+    ...meses.map((m) => ({ rotulo: m, numerica: true, formato: 'inteiro' })),
+    { rotulo: 'Acumulado', numerica: true, formato: 'inteiro' },
+  ];
+
+  const rowEmitidos = [
+    { texto: 'Emitidos' },
+    ...meses.map((m) => {
+      const v = getVal((l) => l.includes('emitid'), m);
+      return { texto: formatar(v ?? 0, 'inteiro') };
+    }),
+    {
+      texto: formatar(
+        getVal((l) => l.includes('emitid'), colAcum) ??
+        meses.reduce((acc, m) => acc + (getVal((l) => l.includes('emitid'), m) || 0), 0),
+        'inteiro'
+      )
+    }
+  ];
+
+  const rowRealizados = [
+    { texto: 'Realizados' },
+    ...meses.map((m) => {
+      const v = getVal((l) => l.includes('utiliz') || l.includes('realiz'), m);
+      return { texto: formatar(v ?? 0, 'inteiro') };
+    }),
+    {
+      texto: formatar(
+        getVal((l) => l.includes('utiliz') || l.includes('realiz'), colAcum) ??
+        meses.reduce((acc, m) => acc + (getVal((l) => l.includes('utiliz') || l.includes('realiz'), m) || 0), 0),
+        'inteiro'
+      )
+    }
+  ];
+
+  const rowCusto = [
+    { texto: 'Custo' },
+    ...meses.map((m) => {
+      const v = getVal((l) => (l.includes('custo') || l.includes('despesa')) && !l.includes('medio') && !l.includes('médio'), m);
+      return { texto: formatar(v ?? 0, 'moedaInteira') };
+    }),
+    {
+      texto: formatar(
+        getVal((l) => (l.includes('custo') || l.includes('despesa')) && !l.includes('medio') && !l.includes('médio'), colAcum) ??
+        meses.reduce((acc, m) => acc + (getVal((l) => (l.includes('custo') || l.includes('despesa')) && !l.includes('medio') && !l.includes('médio'), m) || 0), 0),
+        'moedaInteira'
+      )
+    }
+  ];
+
+  const linhas = [rowEmitidos, rowRealizados, rowCusto];
+  const html = UI.tabelaExecutiva({
+    colunas,
+    linhas,
+    compacta: true,
+    overflowVisible: true,
+  });
+
+  return {
+    html,
+    dados: {
+      tipo: 'checkupMensalLinha',
+      colunas: colunas.map((c) => c.rotulo),
+      linhas: linhas.map((r) => r.map((c) => c.texto)),
+      totalRegistros: linhas.length,
+    }
+  };
+}
 
 function gerarTabelaCheckupPorPlano() {
   const idsR22 = idsDaFonte({ assinatura: 'checkupPendentes' });
@@ -5802,7 +6046,7 @@ function gerarTabelaCheckupPorPlano() {
     { rotulo: 'Vouchers Emitidos', numerica: true },
     { rotulo: 'Realizados', numerica: true },
     { rotulo: 'Taxa de Conversão (%)', numerica: true },
-    { rotulo: 'Custo Estimado (R$)', numerica: true },
+    { rotulo: 'Despesa Estimada (R$)', numerica: true },
   ];
 
   let totEmitidos = 0;
@@ -5888,11 +6132,11 @@ function renderKpi(bloco, ctx) {
   const visiveis = kpis.filter((k) => !k.oculto);
   const cards = visiveis.map((k) => UI.cardKpi({ rotulo: k.rotulo, valor: k.formatado, sub: k.sub, estado: k.estado })).join('');
   let extra = '', dadosExtra = null;
-  if (bloco.id === 'checkup') {
-    const tabPlano = gerarTabelaCheckupPorPlano();
-    if (tabPlano) {
-      extra = typeof tabPlano === 'string' ? tabPlano : tabPlano.html;
-      dadosExtra = tabPlano.dados || { tipo: 'checkupPorPlano' };
+  if (bloco.id === 'checkup' || bloco.id === 'checkup-antigo') {
+    const tabMensal = gerarTabelaCheckupMensalEmLinha();
+    if (tabMensal) {
+      extra = `<div class="tabela-extra">${tabMensal.html}</div>`;
+      dadosExtra = tabMensal.dados;
     } else if (bloco.tabelaExtra) {
       const t = tabelaDeBloco(bloco.tabelaExtra);
       if (!t.vazio) { extra = `<div class="tabela-extra">${t.html}</div>`; dadosExtra = t.dados; }
@@ -6323,14 +6567,14 @@ function renderKpiInternacao(bloco, ctx) {
   const cardsHtml = `
     <div class="kpi-internacao-grid kpi-internacao-grid--duplo">
       ${miniCardHtml({
-        rotulo: 'Custo total das internações',
+        rotulo: 'Despesa total das internações',
         valor: num(m.despTotHosp) !== null && m.despTotHosp >= 0 ? formatar(m.despTotHosp, 'moeda') : '—',
         estado: 'neutro',
         badge: null,
         sub: m.pctTotHospCartStr !== '—' ? `${m.pctTotHospCartStr} da despesa assistencial total` : 'Despesa hospitalar acumulada'
       })}
       ${miniCardHtml({
-        rotulo: 'Custo médio / internação',
+        rotulo: 'Despesa média / internação',
         valor: num(m.custoMedioInt) !== null && m.custoMedioInt >= 0 ? formatar(m.custoMedioInt, 'moeda') : '—',
         estado: m.varCustoMedioPct !== null ? (m.varCustoMedioPct > 0 ? 'negativo' : 'positivo') : 'neutro',
         badge: m.custoMedioIntBmk && m.varCustoMedioPct !== null ? {
@@ -6355,7 +6599,6 @@ function renderKpiInternacao(bloco, ctx) {
             <th class="num" style="white-space: nowrap;">Despesa</th>
             <th class="num" style="white-space: nowrap;">%&nbsp;${esc(nomeEmpresa)}</th>
             <th class="num" style="white-space: nowrap;">%&nbsp;Bench</th>
-            <th class="num" style="white-space: nowrap;">Diferença</th>
             <th class="num" style="white-space: nowrap;">Var. Ano 2×1</th>
           </tr>
         </thead>
@@ -6366,7 +6609,6 @@ function renderKpiInternacao(bloco, ctx) {
               <td class="num" ${r.isTotal ? 'style="font-weight: 700;"' : ''}>${esc(r.despesa)}</td>
               <td class="num" ${r.isTotal ? 'style="font-weight: 700;"' : ''}>${esc(r.pctCart)}</td>
               <td class="num" ${r.isTotal ? 'style="font-weight: 700;"' : ''}>${esc(r.pctBmk)}</td>
-              <td class="num" style="font-weight: 600; ${r.difNum !== null && r.difNum > 0 ? 'color: #D32F2F;' : 'color: #2E7D32;'}">${esc(r.dif)}</td>
               <td class="num" style="font-weight: 600; ${r.varAnualNum !== null && r.varAnualNum > 0 ? 'color: #D32F2F;' : (r.varAnualNum !== null && r.varAnualNum < 0 ? 'color: #2E7D32;' : '')}">${esc(r.varAnual || '—')}</td>
             </tr>
           `).join('')}
@@ -6499,15 +6741,11 @@ function renderKpiInternacao(bloco, ctx) {
         <span class="internacao-metrica-linha"><strong>${m.pctTotHospCartStr}</strong> da despesa assistencial</span>
       </div>
       <div class="internacao-metrica-bloco">
-        <span class="internacao-metrica-titulo">Custo médio por internação:</span>
+        <span class="internacao-metrica-titulo">Despesa média por internação:</span>
         <span class="internacao-metrica-linha">
           <strong>${m.custoMedioInt > 0 ? formatar(m.custoMedioInt, 'moeda') + ' / int.' : '—'}</strong>
           ${m.custoMedioIntBmk > 0 ? ` (Bmk: ${formatar(m.custoMedioIntBmk, 'moeda')})` : ''}
         </span>
-      </div>
-      <div class="internacao-metrica-bloco">
-        <span class="internacao-metrica-titulo">Diferença vs Benchmark:</span>
-        <span class="internacao-metrica-linha"><strong>${m.difTotHospPp !== null ? formatar(m.difTotHospPp, 'pontos') : '—'}</strong> ${m.difTotHospPp !== null && m.difTotHospPp > 0 ? 'acima do benchmark' : 'vs benchmark Omint'}</span>
       </div>
     </div>
   `;
@@ -9626,6 +9864,28 @@ function salvarTextosComAtraso() {
 }
 
 slidesContainer.addEventListener('input', (e) => {
+  const editCorretora = e.target.closest?.('[data-campo-editavel="corretora"]');
+  if (editCorretora) {
+    const rawVal = editCorretora.innerText.replace(/\u00a0/g, ' ');
+    const novoNome = rawVal.replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ').trim();
+    if (DADOS?.relatorio) {
+      DADOS.relatorio.Agente = novoNome;
+    }
+    try {
+      localStorage.setItem(chaveStorageCorretora(), novoNome);
+    } catch (_) {}
+    const cardEl = editCorretora.closest('.card-ficha');
+    if (cardEl) {
+      cardEl.setAttribute('title', novoNome || '—');
+    }
+    const slideFicha = SLIDES.find((s) => s.id === 'ficha');
+    if (slideFicha && slideFicha.dados && Array.isArray(slideFicha.dados.itens)) {
+      const it = slideFicha.dados.itens.find((i) => (i.rotulo || '').toLowerCase().includes('corretora'));
+      if (it) it.valor = novoNome || '—';
+    }
+    return;
+  }
+
   const area = e.target.closest?.('.texto-livre[contenteditable], .card-rc-conteudo[contenteditable], .destaque-desenvolvimento[contenteditable], .comentarios-texto[contenteditable], .quadro-consultor-texto[contenteditable]');
   if (!area) return;
   const id = area.dataset.slide;
@@ -9652,10 +9912,36 @@ slidesContainer.addEventListener('input', (e) => {
 });
 // colar sempre como texto puro
 slidesContainer.addEventListener('paste', (e) => {
+  const editCorretora = e.target.closest?.('[data-campo-editavel="corretora"]');
+  if (editCorretora) {
+    e.preventDefault();
+    const txt = (e.clipboardData.getData('text/plain') || '').replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ');
+    document.execCommand('insertText', false, txt);
+    return;
+  }
   if (!e.target.closest?.('.texto-livre[contenteditable], .card-rc-conteudo[contenteditable], .destaque-desenvolvimento[contenteditable], .comentarios-texto[contenteditable], .quadro-consultor-texto[contenteditable]')) return;
   e.preventDefault();
   document.execCommand('insertText', false, e.clipboardData.getData('text/plain'));
 });
+
+slidesContainer.addEventListener('keydown', (e) => {
+  const editCorretora = e.target.closest?.('[data-campo-editavel="corretora"]');
+  if (editCorretora && e.key === 'Enter') {
+    e.preventDefault();
+    editCorretora.blur();
+  }
+});
+
+slidesContainer.addEventListener('blur', (e) => {
+  const editCorretora = e.target.closest?.('[data-campo-editavel="corretora"]');
+  if (editCorretora) {
+    const val = editCorretora.innerText.trim();
+    if (!val) {
+      const padrao = DADOS?.relatorio?.Agente || '—';
+      editCorretora.innerText = padrao;
+    }
+  }
+}, true);
 
 slidesContainer.addEventListener('click', (e) => {
   const btn = e.target.closest?.('.btn-editar-highlight');
@@ -10025,6 +10311,7 @@ async function carregarApresentacao() {
     if (!json.ok) throw new Error(json.error || 'A API não retornou dados.');
 
     DADOS = json.dados;
+    aplicarOverrideCorretoraSalva(DADOS);
     limparCaches();
     window.DADOS = DADOS;
     atualizarIndicadorFallback();
@@ -10049,6 +10336,7 @@ function atualizarIndicadorFallback() {
 
 function remontar() {
   if (!DADOS) return;
+  aplicarOverrideCorretoraSalva(DADOS);
   atualizarIndicadorFallback();
   SLIDES = montarSlides();
   window.SLIDES = SLIDES;
@@ -10065,6 +10353,7 @@ function exportarPDF() {
   // Palco de impressão com TODOS os slides, em 1200 × 675 sem escala.
   // Usa o motor de impressão do navegador (vetorial, respeita SVG, CSS vars,
   // zoom e fontes) — o usuário escolhe "Salvar como PDF" na caixa de diálogo.
+  document.body.classList.add('imprimindo');
   const palco = document.createElement('div');
   palco.className = 'print-stage';
   palco.innerHTML = SLIDES.map((s, i) => {
@@ -10077,7 +10366,6 @@ function exportarPDF() {
     return slideHtml(s, i + 1);
   }).join('');
   document.body.appendChild(palco);
-  document.body.classList.add('imprimindo');
   ajustarConteudo(palco);
 
   const { dataInicial, dataFinal } = parametros();
@@ -10093,6 +10381,7 @@ function exportarPDF() {
     document.body.classList.remove('imprimindo');
     document.title = tituloOriginal;
     window.removeEventListener('afterprint', limpar);
+    renderSlide(atual);
   };
   window.addEventListener('afterprint', limpar);
   // dá um frame para as fontes/SVGs assentarem antes de abrir o diálogo
